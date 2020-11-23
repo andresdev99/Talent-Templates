@@ -1,0 +1,202 @@
+(function () {
+  var out = {};
+  var html_jobs = document.querySelectorAll("div.jv-wrapper td.jv-job-list-name");
+  var jobs = []; for (var x in html_jobs) {
+    if (typeof html_jobs[x] == "function") continue;
+    if (typeof html_jobs[x] == "number") continue;
+    var job = {};
+    var elem = html_jobs[x];
+    job.title = elem.querySelector("a").textContent.trim();
+    job.url = elem.querySelector("a").href.trim() + '?nl=1&nl=1';
+    job.location = elem.parentNode.querySelector(".jv-job-list-location").textContent.replace(/\s+/g,' ').trim();
+    job.source_jobtype = elem.querySelector("td.jv-job-list-type").textContent.trim();
+    job.temp = 1;
+    if (job.location.indexOf("Locations") > -1) {
+      var full_html = getDescription(job.url);
+      var div = document.createElement("div");
+      div.innerHTML = full_html
+      var locclean = div.querySelector('p.jv-job-detail-meta').innerHTML.trim().replace('<span class="jv-inline-separator"></span>', '|').split('|').pop();
+
+      var locs = locclean;
+      locs = locs.split('<span class="jv-inline-separator"></span>');
+      for (l in locs) {
+        var jobx = {};
+        jobx = {...job}
+        jobx.location = locs[l].replace(/\s+/g,' ').trim();
+        if (jobx.location.length > 0) {
+          jobs.push(jobx);
+        }
+      }
+    } else {
+      job.location = job.location;
+      jobs.push(job);
+    }
+  }
+
+  out["jobs"] = jobs;
+  return out;
+})();
+
+
+function getDescription(url) {
+
+  var xhrrequest = new XMLHttpRequest();
+  xhrrequest.open("GET", url, false); //URL del ajax que trae la información del job
+
+  var response = "";
+  xhrrequest.onreadystatechange = function () {
+    if (xhrrequest.readyState == 4 && xhrrequest.status == 200) {
+      //console.log(xhrrequest.responseText);
+      response = xhrrequest.responseText;
+    }
+  };
+
+  xhrrequest.send();
+  return response;
+}
+
+
+
+// ====================== PAGINATION ======================
+
+
+
+(function () {
+  var out = {};
+  out.wait = 2000;
+
+  var url_base = "https://jobs.jobvite.com/metrostarsystems/search?p=";
+
+  if (typeof pass_it == "undefined") pass_it = {};
+  if (typeof msg == "undefined") msg = function (x) { return x; };
+
+  if (!pass_it["cont"]) {
+    out["pass_it"] = {
+      "cont": 1,
+      "jobs": 0
+    };
+  } else {
+    out["pass_it"] = pass_it;
+  }
+
+  if (document.querySelector('div.jv-wrapper td.jv-job-list-name')) {
+    var nuevaUrl = url_base + out["pass_it"].cont+ '&c=Corporate-otherp=0&nl=3';
+    out["pass_it"].cont++;
+    msg("\x1b[45m URL siguiente:\x1b[45m" + nuevaUrl);
+    window.location.href = nuevaUrl;
+    out["has_next_page"] = true;
+  } else {
+    msg('\x1b[41m NO HAY MAS PAGINA ');
+    out["has_next_page"] = false;
+
+  }
+
+  out["wait"] = true;
+  return out;
+})();
+
+
+
+
+
+
+// ====================== JOBDATA ======================
+
+(function() {
+  var out = {};
+  var job = {};
+  var selector = ".jv-job-detail-description";
+  var remove_selectors = ["a", "input", "div.alert"];
+  //var job = pass_it["job"];
+  if(!document.querySelector(selector))
+  {
+    job.flag_active = 0; 
+    job.html="";
+    job.jobdesc="";
+  }else{
+    //ELIMINAR SELECTOR CON .COM ETC..
+    /*
+	document.querySelectorAll("div.ResAts__card.col-md-8 div.ResAts__Viewport-content.js-jobs-content p").forEach(elem=>{
+      if(elem.textContent.match(/\.com|\.php|\.html|\.co|\.es/gi))
+      {
+        elem.remove();
+      }
+    })
+	*/
+    var full_html = document.querySelector(selector);
+    // remove something from the jobdatata
+    if (remove_selectors.length > 0) remove_selectors.forEach(remove_selector => {if(full_html.querySelector(remove_selector)) full_html.querySelector(remove_selector).remove();});
+    if (typeof cleanHTML == "undefined") cleanHTML = function(x){return x};
+    if (typeof msg == "undefined") msg = console.log;
+
+    job.html      = full_html.innerHTML.trim();   
+
+    /*VALIDAR VARIABLES*/
+    /*
+    var validar = document.querySelectorAll('');
+	var valor; 
+    validar.forEach(elem=>{
+      if(elem.textContent.indexOf('')>-1)
+      {
+      	valor = elem.textContent.trim();
+		msg(`\x1b[45m=>${}`)
+      }
+    })
+    */
+    /***************************BEFORE*******************************/
+    //job.html = removeTextBefore(job.html, '', false);
+    //job.html = removeTextBefore(job.html, '', false);
+    //job.html = removeTextBefore(job.html, '', false);
+    //job.html = removeTextBefore(job.html, '', false);
+    //job.html = removeTextBefore(job.html, '', false);
+    //job.html = removeTextBefore(job.html, '', false);
+    //job.html = removeTextBefore(job.html, '', false);
+
+    /***************************AFTER*******************************/
+    job.html = removeTextAfter(job.html, 'Extreme Networks, Inc', true);
+    //job.html = removeTextAfter(job.html, '', true);
+    //job.html = removeTextAfter(job.html, '', true);
+    //job.html = removeTextAfter(job.html, '', true);
+    //job.html = removeTextAfter(job.html, '', true);
+    //job.html = removeTextAfter(job.html, '', true);
+    //job.html = removeTextAfter(job.html, '', true);
+    //job.html = removeTextAfter(job.html, '', true);
+    //job.html = removeTextAfter(job.html, '', true);
+    //job.html = removeTextAfter(job.html, '', true);
+    //job.html = removeTextAfter(job.html, '', true);
+    //job.html = removeTextAfter(job.html, '', true);
+    job.html      = cleanHTML(job.html);
+    var tmp       = document.createElement('div');
+    tmp.innerHTML = job.html;
+    job.jobdesc   = tmp.textContent.trim();
+    job.jobdesc   = cleanHTML(job.jobdesc);
+    if(job.jobdesc.length<250)
+    {
+      job.flag_active = 0; 
+      job.html="";
+      job.jobdesc=""; 
+    }
+  }
+  out["job"] = job;
+  return out;
+})();
+function removeTextBefore(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).pop();
+    if (!flag) {
+      newHtml = "<h3>" + text + "</h3>" + newHtml;
+    }       
+  }
+  return newHtml;
+}
+function removeTextAfter(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).shift();
+    if (!flag) {
+      newHtml = newHtml + "<p>" + text + "</p>";
+    }       
+  }
+  return newHtml;
+}

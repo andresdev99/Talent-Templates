@@ -1,0 +1,27 @@
+(function() {
+  var out = {};
+  var next_page_selector = '.pager-container li.active + li:not(.disabled) >a'; 
+  var clickable_elem = document.querySelector(next_page_selector);
+  out["pass_it"] = pass_it;
+  msg("===>" + out["pass_it"]["currentUrl"])
+  msg("===>" + out["pass_it"]["urls"].length)
+  
+  if (!clickable_elem) {    
+    if (out["pass_it"]["currentUrl"] < out["pass_it"]["urls"].length) {
+      var url = out["pass_it"].urls[out["pass_it"]["currentUrl"]];
+      msg('\x1b[32m Change to next URL')
+      out["pass_it"]["currentUrl"]+=1;
+      window.location.href = url;
+      out["has_next_page"] = true;
+    } else {
+      msg('\x1b[31m Not Change to next URL')
+      out["has_next_page"] = false;
+    }
+  } else {
+    clickable_elem.click();
+    out["has_next_page"] = true;
+  }
+
+  out.waitFor = "tbody >tr";
+  return out;
+})();

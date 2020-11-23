@@ -1,0 +1,1 @@
+$job['title'] = str_replace("/&amp;/gi", "&", $job['title']);

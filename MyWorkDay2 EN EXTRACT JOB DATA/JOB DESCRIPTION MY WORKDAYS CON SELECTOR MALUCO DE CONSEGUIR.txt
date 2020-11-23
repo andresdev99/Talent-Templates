@@ -1,0 +1,143 @@
+(function() {
+  var out = {};
+  var job = {};
+
+  var selector = ".GWTCKEditor-Disabled:eq(1)";
+
+  var full_html = $(selector);
+
+
+  //---------INFO-------------------------------------
+
+  var html_2 = $("#workdayApplicationFrame").text(); 
+
+
+  if(html_2.toLowerCase().indexOf("part time") > -1 ){job.source_jobtype = "Part time";}
+  if(html_2.toLowerCase().indexOf("part-time") > -1 ){job.source_jobtype = "Part time";}
+  if(html_2.toLowerCase().indexOf("full time") > -1 ){job.source_jobtype = "Full time";}
+  if(html_2.toLowerCase().indexOf("full-time") > -1 ){job.source_jobtype = "Full time";}
+  /*
+      if(html_2.search(/[a-zA-Z0-9._-]+@[a-zA-Z0-9_-]+\.[a-zA-Z]{2,3}(?:\.[a-z]{2})?/gi)>-1){
+      if(html_2.search(/CV|resume|cover letter|apply|curriculum/gi)>-1){
+       job.source_apply_email = job.html_2.match(/[a-zA-Z0-9._-]+@[a-zA-Z0-9_-]+\.[a-zA-Z]{2,3}(?:\.[a-z]{2})?/gi)[0]; }
+      */
+
+
+
+  //job.location       = $("").text().trim();
+  //job.source_jobtype = $("").text().trim();
+
+  //job.source_empname = $("").text().trim();
+  //job.logo           = $("").attr("src");
+
+  //job.source_salary  = $("").text().trim();
+
+
+
+  /*----------DATE-POSTED----------------------------
+
+        var datum = $("").text().trim();
+
+        var cut   = "";
+
+        var day   =  datum.split(cut)[0];
+        var month =  datum.split(cut)[1];
+        var year  =  datum.split(cut)[2];
+
+        job.dateposted_raw  = month +"/"+  day +"/"+ year;
+
+        /*-------------------------------------------------*/
+
+
+
+  //---------REMOVE---------------------------------------
+  full_html.find("div[id^=labeledImage]").remove().end().html();
+  full_html.find("li:has(button)").remove().end().html();
+  full_html.find('a').remove().end().html();
+  full_html.find('style, script').remove().end().html();
+  full_html.find('input, img, button').remove().end().html();
+  full_html.find('div.alert, form').remove().end().html();
+
+  full_html.find("h1").remove().end().html();
+
+  full_html.find("footer").remove().end().html();
+  full_html.find("li:has(svg)").remove().end().html();
+  full_html.find("ul.WGYM.WIYM, .wd-player-media").remove().end().html();
+  full_html.find('span[class="WCQ2"]').remove().end().html();
+  
+  //
+
+
+  // full_html.find("li:first").remove().end().html();
+  //full_html.find("").remove().end().html();
+
+  //full_html.find("p:contains()").remove().end().html();
+  //full_html.find("p:contains()").remove().end().html();
+  //full_html.find("p:contains()").remove().end().html();
+  //full_html.find("p:contains()").remove().end().html();
+
+  //----------------------------------------------------- 
+
+  var full_html = full_html.html();
+
+  job.html     = full_html.trim();
+
+  job.html = removeTextBefore(job.html, "Job Summary", false);
+  //job.html = removeTextBefore(job.html, "", false);
+  //job.html = removeTextBefore(job.html, "", false);
+  //job.html = removeTextBefore(job.html, "", false);
+	
+  job.html = removeTextAfter(job.html, "GCCCD recruits for", true);
+  //job.html = removeTextAfter(job.html, "Posted", true);
+  //job.html = removeTextAfter(job.html, "NOTE:", true);
+  job.html=job.html.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
+  //job.html = removeTextAfter(job.html, "", false);
+  //job.html = removeTextAfter(job.html, "", false);
+  //job.html = removeTextAfter(job.html, "", false);
+
+  //job.html = job.html.split("")[0];
+  //job.html = job.html.split("")[0];
+  //job.html = job.html.split("")[0];
+  //job.html = job.html.split("")[0];
+
+  //job.html = job.html.replace("","");
+  //job.html = job.html.replace("","");
+  //job.html = job.html.replace("","");
+  //job.html = job.html.replace("","");
+
+
+
+
+  //CLEAN EMOJIS
+  //job.html = job.html.replace(/([\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').trim();
+
+
+  //job.html      = cleanHTML(job.html);
+  job.jobdesc   = job.html;
+
+  out["job"] = job;
+  return out;
+
+
+})();
+
+function removeTextBefore(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).pop();
+    if (!flag) {
+      newHtml = "<h3>" + text + "</h3>" + newHtml;
+    }       
+  }
+  return newHtml;
+}
+function removeTextAfter(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).shift();
+    if (!flag) {
+      newHtml = newHtml + "<p>" + text + "</p>";
+    }       
+  }
+  return newHtml;
+}

@@ -1,0 +1,44 @@
+(function() {
+  var out = {};
+  var html_jobs = document.querySelectorAll("div.jobInfo.JobListing");
+  var jobs = [];
+  for(var x in html_jobs){
+    if(typeof html_jobs[x] =="function") continue;
+    if(typeof html_jobs[x] =="number") continue;
+    var job  = {};
+    var elem = html_jobs[x];
+    job.title    = elem.querySelector("span.jobInfoLine.jobTitle").textContent.trim();
+    job.url      = elem.querySelector("a.JobListing__container").href.trim();
+    job.location = elem.querySelector("span.jobInfoLine.jobLocation.JobListing__subTitle").textContent.trim();
+    job.title = job.title.replace(/part time/i,"");
+    job.title = job.title.replace(/part-time/i,"");
+    job.title = job.title.replace(/full time/i,"");
+    job.title = job.title.replace(/full-time/i,"");
+    job.location = job.location.split("|").pop().trim();
+    job.source_jobtype = elem.querySelector("span.jobInfoLine.jobLocation.JobListing__subTitle").textContent.split("|").shift().trim();
+    var nunmbers2 = job.location.split(",").pop().trim(); 
+    if(nunmbers2.length < 9 && nunmbers2.search(/[0-9]/)>-1){
+      job.location = job.location.replace(nunmbers2,"").trim();
+      job.location    = job.location.trim();
+      let lastCharLoc = job.location.substr(job.location.length -1);
+      if(lastCharLoc === ","){job.location = job.location.slice(0,-1);}
+    }
+    if(job.location.indexOf("-")>-1){
+      let splitOnfirstHyphen = job.location.split("-").shift().trim(); 
+      job.location = job.location.replace(splitOnfirstHyphen,"").trim();
+      let firstCharLoc = job.location.charAt(0);
+      if(firstCharLoc === "-"){job.location = job.location.slice(1).trim();}
+    }
+    //job.source_salary  = elem.querySelector("").textContent.trim();
+    //job.source_empname     = elem.querySelector("").textContent.trim();
+    //job.logo               = elem.querySelector("").getAttribute("src").trim();
+    //job.source_apply_email = elem.querySelector("").textContent.trim();
+    job.temp  = 1;
+    //job.jobid = MD5(job.title+job.location+job.temp);
+    //if(job.title.length > 0 && job.location.length > 0 && job.url.length > 0){
+    jobs.push(job);
+    //}
+  } 
+  out["jobs"]= jobs;
+  return out;
+})();

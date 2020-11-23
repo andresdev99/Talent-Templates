@@ -1,0 +1,135 @@
+(function() {
+  var out = {};
+  var jobs = [];
+
+  //  Selector pre is usually where the string of the json is
+  var element = document.querySelector("pre").textContent;
+  //  We parse the json so it can be worked
+  var json = JSON.parse(element);
+  //  Replace positionOfJobs for the path were are the jobs
+  var json_jobs = json.jobs;
+  var expected_jobs_str = json.totalCount;
+  if (!pass_it["cont"]) {
+    out["pass_it"] = {
+      "cont": 1,
+      //"jobs": 0,
+      "total_jobs":0,
+      "expected_jobs": expected_jobs_str
+    };
+  } else {
+    out["pass_it"] = pass_it;
+  }
+  for(i in json_jobs) {
+    var job = {};/*init*/
+    var elem = json_jobs[i];
+
+    job.title = elem.data.title;
+    job.location = elem.data.full_location.trim();
+    job.url = elem.data.meta_data.canonical_url;       
+    job.dateposted_raw=getDateFormat(elem.data.posted_date.trim()," ",1,0,2);
+    job.temp = "1";
+
+    //job.dateposted_raw = elem.positionOfDatePosted;
+    //job.dateclosed_raw = elem.positionOfDateClosed;
+    job.source_jobtype = elem.data.employment_type.split("_").join(" ").trim();
+    //job.source_salary = elem.positionOfSalary;         
+    //job.source_empname = elem.positionOfEmpname;
+    //job.logo = elem.positionOfLogo;
+    //job.source_apply_email = elem.positionOfEmail;
+    if(job.location.indexOf(";")>-1)
+    {
+      let locs = job.location.split(';');
+      //MULTILOCATION
+      locs.forEach(function(location){
+        let jobx = {};
+        jobx.title = job.title;
+        jobx.location = location.trim();
+        jobx.url = job.url;
+        jobx.dateposted_raw = job.dateposted_raw;
+        jobx.temp=job.temp;
+        jobs.push(jobx);
+      })
+    }
+    else{
+      jobs.push(job);
+    }
+  }
+
+  out["pass_it"].total_jobs += 10;
+  out["jobs"]= jobs;
+  return out;
+})();
+function getDateFormat(dateRaw, cut, dayPosition, monthPosition, yearPosition) {
+  dateRaw = dateRaw.replace(/\,/g,"").trim();
+
+  let day   =  dateRaw.split(cut)[dayPosition], 
+      month =  dateRaw.split(cut)[monthPosition], 
+      year  = dateRaw.split(cut)[yearPosition];
+
+  if(dateRaw.search(/[a-z]/gi)>-1){ 
+    if(month.search(/jan/i)>-1){month = "01";}
+    if(month.search(/feb/i)>-1){month = "02";}
+    if(month.search(/mar/i)>-1){month = "03";}
+    if(month.search(/apr/i)>-1){month = "04";}
+    if(month.search(/may/i)>-1){month = "05";}
+    if(month.search(/jun/i)>-1){month = "06";}
+    if(month.search(/jul/i)>-1){month = "07";}
+    if(month.search(/aug/i)>-1){month = "08";}
+    if(month.search(/sep/i)>-1){month = "09";}
+    if(month.search(/oct/i)>-1){month = "10";}
+    if(month.search(/nov/i)>-1){month = "11";}
+    if(month.search(/dec/i)>-1){month = "12";}
+  }
+  var datum = month +"/"+  day +"/"+ year;
+  return datum;
+}
+/*(function() {
+  var out = {};
+  var html_jobs = document.querySelectorAll(".job-results-container > search-job-cards > mat-accordion > mat-expansion-panel");
+  var jobs = [];for(var x in html_jobs){
+    if(typeof html_jobs[x] =="function") continue;
+    if(typeof html_jobs[x] =="number") continue;
+    var job = {};
+    var elem = html_jobs[x];
+    job.title = elem.querySelector(".job-title-link > span").textContent.trim();
+    job.url = elem.querySelector("a").href.trim();
+    if(elem.querySelector("span.label-value.location"))
+      job.location = elem.querySelector("span.label-value.location").textContent.trim();
+    else
+      job.location = "Woodland Hills, CA";        
+    job.location = job.location.replace("United States" , ", United States");
+
+    if(job.location.indexOf("Virtual")>-1){job.location = "Woodland Hills, CA";}
+    job.dateposted_raw = elem.querySelector("span.label-value.posted_date").textContent.trim();
+    //job.logo = elem.querySelector("").getAttribute("src").trim();
+    //job.source_apply_email = elem.querySelector("").textContent.trim();
+    //job.source_empname = elem.querySelector("").textContent.trim();
+    //job.source_jobtype = elem.querySelector("").textContent.trim();
+    //job.source_salary = elem.querySelector("").textContent.trim();
+    job.temp = 1998;
+    if (job.location.indexOf("Multiple")>-1)
+    {
+      const dataFromDescription = getDescription(job.url); 
+      let div = document.createElement("div");     
+      div.innerHTML = dataFromDescription;
+      let locs = div.querySelector("#header-locations").textContent.split(";");
+      //MULTILOCATION
+      locs.forEach(function(location){
+        let jobx = {};
+        jobx.title = job.title;
+        jobx.location = location.textContent.trim();
+        jobx.url = job.url;
+        jobx.dateposted_raw = job.dateposted_raw;
+        jobx.temp=job.temp;
+        jobs.push(jobx);
+      })
+    }
+    else{
+      jobs.push(job);
+    }
+  } 
+
+  out["jobs"]= jobs;
+  return out;
+})();
+/* Request to Description for extract job location*/

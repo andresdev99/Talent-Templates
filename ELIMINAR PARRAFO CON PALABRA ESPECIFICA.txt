@@ -1,0 +1,6 @@
+document.querySelectorAll("div.ResAts__card.col-md-8 div.ResAts__Viewport-content.js-jobs-content p").forEach(elem=>{
+      if(elem.textContent.match(/.com|.php|.html|.co|.es/gi))
+      {
+        elem.remove();
+      }
+    })

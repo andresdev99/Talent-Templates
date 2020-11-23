@@ -1,0 +1,71 @@
+(function() {
+  var out = {};
+  var job = {};
+
+  out["wait"]= true;
+  var iframe_selector = "#icims_content_iframe";
+  var iframeDocument = document.querySelector(iframe_selector).contentWindow.document;
+  var selector = ".iCIMS_JobContent";
+  var remove_selector = "";
+  //var job = pass_it["job"];
+  if(!iframeDocument.querySelector(selector))
+  {
+    job.flag_active = 0; 
+    job.html="";
+    job.jobdesc="";
+  }else{
+    var full_html = iframeDocument.querySelector(selector);
+    // remove something from the jobdatata
+    if (remove_selector != "") full_html.querySelector(remove_selector).remove();
+    if (typeof cleanHTML == "undefined") cleanHTML = function(x){return x};
+    if (typeof msg == "undefined") msg = function(x){return x};
+    var validar = iframeDocument.querySelectorAll('div.iCIMS_JobHeaderGroup dl');
+    validar.forEach(elem=>{
+      if(elem.textContent.indexOf('Job ID')>-1)
+      {
+        job.reqid = elem.querySelector("dd.iCIMS_JobHeaderData").textContent.trim();
+        msg(`\x1b[45m=>${job.reqid}`)
+      }
+    })
+      job.html 		= full_html.innerHTML.trim();
+    job.jobdesc 	= full_html.textContent.trim();
+
+    job.html = removeTextBefore(job.html, "Overview", false);
+    job.html = removeTextAfter(job.html, "Options", true);
+    job.html = removeTextAfter(job.html, "#LI", true);
+    job.html = removeTextAfter(job.html, "#CO", true);
+    job.html 		= cleanHTML(job.html);
+    job.jobdesc 	= cleanHTML(job.jobdesc);
+    if(job.jobdesc.length<250)
+    {
+      job.flag_active = 0; 
+      job.html="";
+      job.jobdesc=""; 
+    }
+  }
+  out["job"] = job;
+  return out;
+})();
+
+
+function removeTextBefore(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).pop();
+    if (!flag) {
+      newHtml = "<h3>" + text + "</h3>" + newHtml;
+    }  		
+  }
+  return newHtml;
+}
+
+function removeTextAfter(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).shift();
+    if (!flag) {
+      newHtml = newHtml + "<p>" + text + "</p>";
+    }  		
+  }
+  return newHtml;
+}

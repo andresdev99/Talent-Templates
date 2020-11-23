@@ -1,0 +1,18 @@
+ (function() {
+	var out = {};
+     try{      
+       var element = document.querySelector("pre").textContent;
+       if(!element){
+        out["has_next_page"] = false;
+       }
+      //msg(element);
+       var json = JSON.parse(element);
+       var jobs = json.body.children[0].children[0].listItems;
+       out["json"] = jobs;
+     }catch(error){
+        out["wait"] = 500;
+       
+     }
+	
+  	return out;
+})();

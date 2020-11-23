@@ -1,0 +1,89 @@
+(function() {
+  var out = {};
+  var html_jobs = document.querySelectorAll('li[class="list-item"]');
+  var jobs = [];for(var x in html_jobs){
+    if(typeof html_jobs[x] =="function") continue;
+    if(typeof html_jobs[x] =="number") continue;
+    var job = {};
+    var elem = html_jobs[x];
+    job.title = elem.querySelector("h3 a").textContent.trim();
+    job.url = elem.querySelector("h3 a").href.trim();
+    //var auxLocation=elem.querySelector("ul.list-meta li:first-child").textContent.match(/\(([^)]+)\)/)[1].trim().split(" ");
+    //var isoLocation=auxLocation[auxLocation.length-1];
+    //job.location = elem.querySelector("ul.list-meta li:first-child").textContent.match(/\(([^)]+)\)/)[1].trim().split(" ");
+    //job.location.splice(job.location.length-1,1,", "+isoLocation).join();
+    //job.location=job.location.join(" ");
+    job.location =elem.querySelector("ul.list-meta li:nth-child(1)").textContent.trim()
+    job.dateposted_raw = elem.querySelector('div[class="list-published"]').textContent.trim();
+    job.dateposted_raw = dateAgo(job.dateposted_raw.replace('more than ',''),' ',1,2);
+    if(elem.querySelector('span[class="list-entry-ends"]') && elem.querySelector('span[class="list-entry-ends"]').textContent.trim().indexOf('Continuous') < 0)
+    {
+      job.dateclosed_raw = elem.querySelector('span[class="list-entry-ends"]').textContent.trim();
+      job.dateclosed_raw =  dateAgo1(job.dateclosed_raw.replace('more than',''),' ',2,3);
+    }
+    //job.logo = elem.querySelector("").getAttribute("src").trim();
+    //job.source_apply_email = elem.querySelector("").textContent.trim();
+    //job.source_empname = elem.querySelector("").textContent.trim();
+    job.source_jobtype = elem.querySelector('ul[class="list-meta"] >li:nth-child(2)').textContent.split('-')[0].trim();
+    job.source_salary = elem.querySelector('ul[class="list-meta"] >li:nth-child(2)').textContent.split('-').pop().trim();
+	/*job.source_jobtype = elem.querySelector('ul[class="list-meta"] >li:nth-child(1)').childNodes[0].textContent.trim()
+		job.source_salary = elem.querySelector('ul[class="list-meta"] >li:nth-child(1)').childNodes[2].textContent.trim()*/
+    job.temp = 1;
+    jobs.push(job);
+  } 
+
+  out["jobs"]= jobs;
+  return out;
+})();
+
+function dateAgo (text, char_separator, position_value_DWMY, position_word_DWMY){  
+  var numberDWMY = parseInt(text.trim().split(char_separator)[position_value_DWMY],10); //obtengo el valor numerico del dia, sem, mes o año
+  if(typeof text.split(char_separator)[position_word_DWMY]!=='undefined'){
+    var dayWeekMonthYear = text.split(char_separator)[position_word_DWMY]
+    }else{ var dayWeekMonthYear = text.split(char_separator)[text.split(char_separator).length - 1]};
+  var date_Now = new Date();  //declaro un objeto tipo fecha
+  var nDays = 0;
+  if (dayWeekMonthYear.toUpperCase().search(/TODAY|HOUR/g)>-1){nDays = 0;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('YESTERDAY')>-1) {nDays = 1;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('DAYS')>-1){nDays = numberDWMY;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('WEEK')>-1){nDays = numberDWMY * 7;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('MONTH')>-1){nDays = numberDWMY * 30;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('YEAR')>-1){nDays = numberDWMY * 365;}
+  var dateJob    = date_Now.getDate() - nDays;     //resto dias de publicacion a la fecha actual
+  var get_date   = date_Now.setDate(dateJob);      //obtengo la cantidad de mseg. desde 1 de Enero de 1970
+  var datePosted = new Date(get_date);             //obtengo la fecha de publicacion.
+  //Obtengo dia mes y Año
+  var dd    = datePosted.getDate();                //devuelve el numero del dia del mes.
+  var mm    = datePosted.getMonth()+1;             //getMonth devuelve valores de 0 a 11, se suma uno para llevarlo de 1 a 12.
+  var yyyy  = datePosted.getFullYear().toString(); //devuelve el año.
+  if (dd < 10){dd ='0'+dd;}  
+  if (mm<10){mm ='0'+ mm;}  
+  dateJob= mm +'/'+dd+'/'+yyyy;
+  return dateJob;
+}
+
+function dateAgo1 (text, char_separator, position_value_DWMY, position_word_DWMY){  
+  var numberDWMY = parseInt(text.trim().split(char_separator)[position_value_DWMY],10); //obtengo el valor numerico del dia, sem, mes o año
+  if(typeof text.split(char_separator)[position_word_DWMY]!=='undefined'){
+    var dayWeekMonthYear = text.split(char_separator)[position_word_DWMY]
+    }else{ var dayWeekMonthYear = text.split(char_separator)[text.split(char_separator).length - 1]};
+  var date_Now = new Date();  //declaro un objeto tipo fecha
+  var nDays = 0;
+  if (dayWeekMonthYear.toUpperCase().search(/TODAY|HOUR/g)>-1){nDays = 0;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('YESTERDAY')>-1) {nDays = 1;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('DAYS')>-1){nDays = numberDWMY;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('WEEK')>-1){nDays = numberDWMY * 7;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('MONTH')>-1){nDays = numberDWMY * 30;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('YEAR')>-1){nDays = numberDWMY * 365;}
+  var dateJob    = date_Now.getDate() + nDays;     //resto dias de publicacion a la fecha actual
+  var get_date   = date_Now.setDate(dateJob);      //obtengo la cantidad de mseg. desde 1 de Enero de 1970
+  var datePosted = new Date(get_date);             //obtengo la fecha de publicacion.
+  //Obtengo dia mes y Año
+  var dd    = datePosted.getDate();                //devuelve el numero del dia del mes.
+  var mm    = datePosted.getMonth()+1;             //getMonth devuelve valores de 0 a 11, se suma uno para llevarlo de 1 a 12.
+  var yyyy  = datePosted.getFullYear().toString(); //devuelve el año.
+  if (dd < 10){dd ='0'+dd;}  
+  if (mm<10){mm ='0'+ mm;}  
+  dateJob= mm +'/'+dd+'/'+yyyy;
+  return dateJob;
+}

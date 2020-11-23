@@ -1,0 +1,61 @@
+(function() {
+  var out = {};
+  if (typeof pass_it == "undefined") pass_it = {};
+  if (typeof msg == "undefined") msg = function (x) { return x; };
+  if (!pass_it["cont"]) {
+    out["pass_it"] = {
+      "cont": 1,
+    };
+  } else {
+    out["pass_it"] = pass_it;
+  }
+  var iframe_selector = "#icims_content_iframe";
+  var iframeDocument = document.querySelector(iframe_selector).contentWindow.document;
+  var html_jobs = iframeDocument.querySelectorAll('.iCIMS_JobsTable > div.row');
+  var jobs = [];
+  for(var x in html_jobs){
+    if(typeof html_jobs[x] =="function") continue;
+    if(typeof html_jobs[x] =="number") continue;
+    var job = {};
+    var elem = html_jobs[x];
+    job.title = elem.querySelector("a > span:nth-child(2)").textContent.trim();
+    job.title = job.title.split("(").shift();
+    job.title = job.title.split("-").shift();
+    job.title = job.title.split("*").shift();
+    job.title = job.title.replace("Part Time","");
+    // job.title = job.title.replace(/\s+/gi, ' ');
+    job.url = elem.querySelector("a").href.trim()+"&mode=job&iis=Neuvoo";
+    job.location = elem.querySelector("div.col-xs-6.header.left span:nth-child(2)").textContent.trim();
+    job.location = job.location.replace('-(REMOTE - Work from Home)','').replace('| ...','');
+    //job.dateposted_raw = elem.querySelector("").textContent.trim();
+    //job.logo = elem.querySelector("").getAttribute("src").trim();
+    //job.source_apply_email = elem.querySelector("").textContent.trim();
+    //job.source_empname = elem.querySelector("").textContent.trim();
+    // job.source_jobtype = elem.querySelector("div.iCIMS_JobHeaderGroup dl:nth-child(3)").textContent.trim();
+    //job.source_salary = elem.querySelector("").textContent.trim();
+    job.temp = 2020;
+    if(job.location.indexOf("|")>-1)
+    {
+      var aux = job.location.split("|");
+      for(i in aux)
+      {
+        var jobx = {...job};
+        jobx.location = aux[i];
+        jobx.location = jobx.location.split('-').reverse().join(', ').trim();
+        if(job.title.length > 0 && job.location.length > 3){
+          jobs.push(jobx);
+        }
+      }
+    }
+    else{
+      job.location = job.location.split('-').reverse().join(', ').trim();
+      job.temp = 1;
+      if(job.title.length > 0 && job.location.length > 3){
+        jobs.push(job);
+      }
+    }
+  }
+  //out.wait=2000;
+  out["jobs"]= jobs;
+  return out;
+})();

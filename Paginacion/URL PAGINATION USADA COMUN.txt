@@ -1,0 +1,45 @@
+(function () {
+    var out = {};
+    out.wait=2000;
+  
+    var url_base = "https://emploi.ehc-vd.ch/?page=advertisement&sort=&p=";
+
+    if (typeof pass_it == "undefined") pass_it = {};
+    if (typeof msg == "undefined") msg = function(x){return x; };
+
+    if (!pass_it["cont"]) {
+        out["pass_it"] = {
+            "cont": 1,
+            "jobs": 0
+        };
+    } else {
+        out["pass_it"] = pass_it;
+    }
+  
+
+  var perpage_fijo = "10";
+  var perpage_actual = document.querySelectorAll("#content > table.tablelist > tbody > tr > td > a").length;
+    
+
+ msg("perpage_fijo: "+perpage_fijo);
+  msg("perpage_actual: "+perpage_actual);
+  
+  
+
+  
+ 
+  if (perpage_actual >= perpage_fijo){
+    var nuevaUrl = url_base+ out["pass_it"].cont;
+    out["pass_it"].cont++;
+    msg("\x1b[45m URL siguiente:\x1b[45m"+nuevaUrl);
+    window.location.href = nuevaUrl;
+    out["has_next_page"] = true; 
+  } else {
+    msg('\x1b[41m NO HAY MAS PAGINA ');
+    out["has_next_page"] = false;
+  
+  }
+  
+   out["wait"] = true;
+    return out;
+})();

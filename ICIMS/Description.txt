@@ -1,0 +1,47 @@
+(function() {
+	var out = {};
+	var job = {};
+  	var selector = "div.iCIMS_JobContent";
+  	var remove_selector = "";
+  	//var job = pass_it["job"];
+  
+  	var iframe_selector = "#icims_iframe_span > iframe";   
+    var iframeDocument = document.querySelector(iframe_selector).contentWindow.document;
+  
+	var full_html = iframeDocument.querySelector(selector);
+  	// remove something from the jobdatata 
+	
+  	
+	job.html 		= full_html.innerHTML.trim();
+	job.jobdesc 	= full_html.textContent.trim();
+  
+  	job.html = removeTextBefore(job.html, "Company Overview", false);
+    job.html = removeTextAfter(job.html, "Apply Options", true);
+  
+	job.jobdesc 	= cleanHTML(job.jobdesc);
+  
+	out["job"] = job;
+	return out;
+  
+    function removeTextBefore(html, text, flag) {
+      var newHtml = html;
+      if (newHtml.indexOf(text) > -1) {
+        newHtml = newHtml.split(text).pop();
+        if (!flag) {
+          newHtml = "<h3>" + text + "</h3>" + newHtml;
+        }  		
+      }
+      return newHtml;
+    }
+
+    function removeTextAfter(html, text, flag) {
+      var newHtml = html;
+      if (newHtml.indexOf(text) > -1) {
+        newHtml = newHtml.split(text).shift();
+        if (!flag) {
+          newHtml = newHtml + "<p>" + text + "</p>";
+        }  		
+      }
+      return newHtml;
+    }
+})();

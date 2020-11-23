@@ -1,0 +1,48 @@
+(function() {
+  var out = {};
+  var jobs = [];
+  if (typeof pass_it == "undefined") pass_it = {};
+  if (typeof msg == "undefined") msg = console.log;
+
+  if (!pass_it["cont"]) {
+    out["pass_it"] = {
+      "cont": 0,
+     // "id":0,
+      "jobs": 0
+    };
+  } else {
+    out["pass_it"] = pass_it;
+  }
+  //  Selector pre is usually where the string of the json is
+  var element = document.querySelector("pre").textContent;
+  //  We parse the json so it can be worked
+  var json = JSON.parse(element);
+  //  Replace positionOfJobs for the path were are the jobs
+  var json_jobs = json.job_requisitions;
+  var elems;
+  for(i in json_jobs) {
+    var job = {};/*init*/
+    var elem = json_jobs[i];
+
+    job.title = elem.job_title;
+    job.location = elem.location.city+", "+elem.location.state+", "+elem.location.country;
+   // job.url="https://secure.entertimeonline.com/ta/StockandField.careers?rnd=PZJ&careerssearch=";
+  //  out["pass_it"]["id"] = "https://secure.entertimeonline.com/ta/rest/ui/companies/%7CStockandField/recruitment/job-requisitions/"+elem.id+"?_=1599176210242";                    
+    job.url = "https://secure.entertimeonline.com/ta/rest/ui/companies/%7CStockandField/recruitment/job-requisitions/"+elem.id+"?_=1599176210242";    
+  
+    //job.dateposted_raw = elem.positionOfDatePosted;
+    //job.dateclosed_raw = elem.positionOfDateClosed;
+    //job.source_jobtype = elem.positionOfJobtype;
+    //job.source_salary = elem.positionOfSalary;         
+    //job.source_empname = elem.positionOfEmpname;
+    //job.logo = elem.positionOfLogo;
+    //job.source_apply_email = elem.positionOfEmail;
+
+    job.temp = 20201999;
+
+    jobs.push(job);
+  }
+
+  out["jobs"]= jobs;
+  return out;
+})();

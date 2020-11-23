@@ -1,0 +1,39 @@
+(function() {
+  var out = {};
+ 
+  if (typeof pass_it == "undefined") pass_it = {};
+  if (typeof msg == "undefined") msg = function (x) { return x; };
+
+  if (!pass_it["cont"]) {
+    out["pass_it"] = {
+      "cont": 1,
+    };
+  } else {
+    out["pass_it"] = pass_it;
+  }
+
+  var iframe_selector = "#icims_content_iframe";
+  var iframeDocument = document.querySelector(iframe_selector).contentWindow.document;
+  var textPaginador = iframeDocument.querySelector(".pull-left > h2.iCIMS_SubHeader.iCIMS_SubHeader_Jobs").textContent.trim();
+
+  var max = textPaginador.split(" of ").pop();
+  var min = textPaginador.split(" of ").shift().split("Page ").pop();
+
+
+  if (parseInt(min, 10) < parseInt(max, 10)) {/*elem-exist*/
+    msg(min + " - " + max);
+    var nuevaUrl = "https://careers-lls.icims.com/jobs/search?pr=" + out["pass_it"].cont + "&schemaId=&o=";
+    out["pass_it"].cont++;
+    window.location.href = nuevaUrl;
+    out["has_next_page"] = true;
+  } else {
+    //try again
+    out["has_next_page"] = false;
+  }
+
+  //out["pic"] = true;
+  //out.wait = 1;
+  out.iframeSelector = iframe_selector;
+  out.iframeWaitFor = "body > div.iCIMS_MainWrapper.iCIMS_ListingsPage > ul";
+  return out;
+})();

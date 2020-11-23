@@ -1,0 +1,55 @@
+(function () {
+  var jobs = [];
+  var out = {};
+  var cont = 1;
+  var json;
+  var seguir = true;
+  if (typeof msg == "undefined") msg = console.log;
+  do {
+
+    var data = "action=sf-search&data%5Bsearch-id%5D=555&data%5Bpage%5D="+cont;
+
+    $.ajax({
+      url: 'https://jobs.teamviewer.com/wp-admin/admin-ajax.php',                                            // 1) url
+      headers: {
+        "accept": "*/*",
+        "accept-language": "es-419,es;q=0.9,en;q=0.8",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        "x-requested-with": "XMLHttpRequest"
+      },
+      type: 'POST',                                        // 3) tipo
+      dataType: "json",                                  // 4) data que retorna
+      data: data,
+      //data: JSON.stringify(data),
+      async: false,
+      success: function (result) {
+        msg("loading jobs...");
+        json = result.result;                                 // 5) ruta de los trabajos
+        if(json.length < 10)
+          seguir = false;
+        //msg(json.length);
+        for (var i = 0; i < json.length; i++) {
+          var job = {};
+          let div = document.createElement("div");
+          div.innerHTML = json[i];
+          if(div.querySelector("a")){
+            job.title = div.querySelector("a").textContent;
+            job.location =  div.querySelector("div:nth-child(2) > p").textContent;;
+            job.url = div.querySelector("a").href;
+            job.temp = 1;
+            jobs.push(job);
+          }
+        }
+        cont++;
+      },
+      error: function (error) {
+        msg(error);
+      }
+    });
+  } while (seguir);                                 // 6) condicion de parada
+  out["jobs"] = jobs;
+  return out;
+})();

@@ -1,0 +1,66 @@
+(function() {
+  var out = {};
+  var job = {};
+
+  var jobid = pass_it["job"].url.split("&r=").pop();
+  var endpoint = "https://recruiting.adp.com/srccar/public/rest/1/1335651/job/" + jobid + "?rl=enUS";
+  msg(endpoint);
+
+  $.ajax({
+    url: endpoint,
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    type: 'GET',
+    async: false,
+    success: function (result) {
+      var full_html = "";
+      //var job_type = result.fields[3].content;
+
+      //company = company.split("-").shift();
+      //job.source_jobtype = job_type;
+
+      // msg("Company ===================================> " + job.source_empname);
+
+      for (var i = 0; i < result.fields.length; i++) {
+        // Ignorar las dos primeras posiciones porque son como basura...
+        if (i >= 2) {
+          full_html += "<br/>";
+          full_html += "<h3>" + result.fields[i].label + "</h3><br/>" + result.fields[i].content;
+        }
+      }
+
+      job.html 		= full_html;
+      job.html = job.html.replace("Alternate Work Locations","");
+      job.jobdesc 	= full_html;
+
+      ////////////////////////  email Extract boo
+      if(job.html == "undefined"){job.html = "";}
+
+      if(job.html.indexOf("@")>-1){
+        var email = $("<div>"+job.html+"</div>").text().match(/[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,3}/gi);
+        if (email) { job.source_apply_email = email[0].trim()  ; }
+
+        //"div.vacancy-contact__content "+ " div.contact-buttons.margin > div:nth-child(2) > a" +'div.vacancy-contact__content a'
+        //var noe = $('div.vacancy-contact__content "+ " div.contact-buttons.margin > div:nth-child(2) > a',html).attr("href").match(/[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,3}/gi);
+        //var milo = $('div.contentInnerMarginJobfinder',html).html().match(/[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,3}/gi)[0];
+        msg('[Y]'+email+"/////"+"///////");
+        //job.source_apply_email = $(this).find("").text();
+      }
+      ////////////
+
+      //job.html = removeTextAfter(job.html, "Alternate Work Locations", true);
+      job.html 		= cleanHTML(job.html);
+      job.html = job.html.split("Alternate Work Locations")[0];
+      job.html = job.html.replace("Alternate Work Locations","");
+      job.jobdesc 	= cleanHTML(job.jobdesc);
+
+    },
+    error: function (error) {
+      msg(error);
+    }
+  });
+
+  out["job"] = job;
+  return out;
+})();

@@ -1,0 +1,23 @@
+
+(function () {
+  var out = {};
+  //msg("\x1b[42m Solo corriendo")
+  if (typeof msg == "undefined") msg = function (x) { return x; };
+
+  out["pass_it"] = pass_it;
+
+  if(out["pass_it"].expected_jobs <= out["pass_it"].total_jobs){
+    msg("\x1b[45mno ENTRO "+out["pass_it"].expected_jobs)
+    out["has_next_page"] = false;
+  } else {
+    msg("\x1b[45mENTRO "+out["pass_it"].expected_jobs)
+    out["pass_it"].cont += 1;
+    var url = "https://jobs.farmersinsurance.com/api/jobs?page=" + out["pass_it"].cont;
+    //msg(url);
+    window.location.href = url;
+    out["has_next_page"] = true;
+  }
+
+  out.waitFor = 'pre';
+  return out;
+})();

@@ -1,0 +1,36 @@
+(function() {
+  var out = {};
+  if (!pass_it["urls"]) {
+    out["pass_it"] = {
+      // Esta variable se usa en el pagination (Cuando los jobs sean > 0 se debe seguir paginando, en caso contrario se debe ir al siguiente link)
+      "jobs": 0,
+      // Arreglo de URLs
+      "urls": ["https://tervis.submit4jobs.com/index.cfm?fuseaction=85407.viewjobs&CID=85407&buid=2817",//LINK DE LOS IFRAMES
+               "https://tervis.submit4jobs.com/index.cfm?fuseaction=85407.viewjobs&CID=85407&buid=2822"],
+      "currentUrl": 0
+    };
+  } else {
+    out["pass_it"] = pass_it;
+  }
+  var html_jobs = document.querySelectorAll("tbody tr");
+  var jobs = [];for(var x in html_jobs){
+    if(typeof html_jobs[x] =="function") continue;
+    if(typeof html_jobs[x] =="number") continue;
+    var job = {};
+    var elem = html_jobs[x];
+    job.title = elem.querySelector(".col-sm-12.h4.text-left").textContent.split("-").shift().trim();
+    job.url = elem.querySelector("a").href.trim();
+    job.location =elem.querySelector("tbody tr .col-sm-8.h4.big-left.text-left").textContent.split(" /").join(",").trim()
+    //job.dateposted_raw = elem.querySelector("").textContent.trim();
+    //job.logo = elem.querySelector("").getAttribute("src").trim();
+    //job.source_apply_email = elem.querySelector("").textContent.trim();
+    //job.source_empname = elem.querySelector("").textContent.trim();
+    job.source_jobtype = elem.querySelector(".col-sm-12.h4.text-left").textContent.split("-").pop().trim();;
+    //job.source_salary = elem.querySelector("").textContent.trim();
+    job.temp = 1;
+    jobs.push(job);
+  } 
+
+  out["jobs"]= jobs;
+  return out;
+})();

@@ -1,0 +1,10 @@
+function isNumeric(n) {
+  if(!isNaN(n))
+    {
+     return true
+    }
+  else
+   {
+    return false
+   }
+}

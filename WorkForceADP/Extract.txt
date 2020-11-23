@@ -1,0 +1,83 @@
+/*Extract*/
+(function () {
+    let out = {};
+    const countries = {
+        AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California", CO: "Colorado", CT: "Connecticut", DE: "Delaware",
+        FL: "Florida", GA: "Georgia", HI: "Hawaii", ID: "Idaho", IL: "llinois", IN: "Indiana", IA: "Iowa", KS: "Kansas", KY: "entucky",
+        LA: "Louisiana", ME: "Maine", MD: "Maryland", MA: "Massachusetts", MI: "Míchigan", MN: "Minnesota", MS: "Mississippi", MO: "Missouri",
+        MT: "Montana", NE: "Nebraska", NV: "Nevada", NH: "New Hampshire", NJ: "New Jersey", NM: "New Mexico", NY: "New York", NC: "North Carolina",
+        ND: "North Dakota", OH: "Ohio", OK: "Oklahoma, US", OR: "Oregon", PA: "Pennsylvania", RI: "Rhode Island", SC: "South Carolina", SD: "South Dakota",
+        TN: "Tennessee", TX: "Texas, US", UT: "Utah", VT: "Vermont", VA: "Virginia", WA: "Washington", WV: "West", WI: "Wisconsin", WY: "Wyoming", DC: "DC"
+    }
+    if (typeof pass_it == "undefined") pass_it = {};
+    if (!pass_it["cont"]) {
+        out["pass_it"] = {
+            "cont": 1,
+            "jobs": 0
+        };
+    } else {
+        out["pass_it"] = pass_it;
+    }
+
+    const element = document.querySelector("pre").textContent;
+    const json = JSON.parse(element);
+    const jobs = json.jobRequisitions;
+    const geoUS = new Geo(Object.keys(countries), Object.values(countries));
+    let returnedJobs = [];
+    for (i in jobs) {
+        let job = {};
+
+        job.title = jobs[i].requisitionTitle;
+        const domain = window.location.origin + "/mascsr/default/mdf/recruitment/recruitment.html?cid=2d0c456f-0c87-47ef-b4ce-05813125f63a&jobId=";
+        job.url = domain + jobs[i].customFieldGroup.stringFields[0].stringValue.trim()
+
+        /* validate if exists location */
+        if (jobs[i].requisitionLocations[0]) {
+            const city = jobs[i].requisitionLocations[0].address.cityName.trim();
+            const state = jobs[i].requisitionLocations[0].address.countrySubdivisionLevel1.codeValue.trim();
+            console.log(state)
+
+            const newCode = geoUS.doCleaning(state);
+
+            job.location = city + ', ' + newCode[0];
+
+        } else { job.location = "HQ"; }
+
+        let date = jobs[i].postDate.split('T').shift().trim().split('-').reverse();
+        job.dateposted_raw = `${date[1]}/${date[0]}/${date[2]}`;
+
+        /* validate if Jobtype exists */
+        if (jobs[i].workLevelCode) {
+            job.source_jobtype = jobs[i].workLevelCode.shortName.replace('Hourly', '').trim()
+        }
+
+        job.temp = 1;
+
+        returnedJobs.push(job);
+    }
+
+    out["pass_it"]["jobs"] = returnedJobs.length;
+    out["jobs"] = returnedJobs;
+    return out;
+
+})();
+function Geo(countryCodesArr, countriesArr) {
+    this.countryCodesArr = countryCodesArr;
+    this.countriesArr = countriesArr;
+    this.doCleaning = (word) => {
+        let result, countryResult;
+        result = this.doSearch(this.countryCodesArr, word);
+        countryResult = this.countriesArr[result];
+        return new Array(countryResult, result);
+    }
+    this.doSearch = (arraySearch, targetValue) => {
+        let arrayDoSearch = arraySearch;
+        let length = arrayDoSearch.length;
+        for (let item = 0; item < length; item++) {
+            if (arrayDoSearch[item] === targetValue) {
+                console.log('\x1b[32m Find');
+                return item;
+            }
+        }
+    }
+}

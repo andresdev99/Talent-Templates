@@ -1,0 +1,35 @@
+(function() {
+  var out = {};
+  var html_jobs = document.querySelectorAll('div.results_content.jResultsContent.jResultsActive div#job_results_list_hldr div.jlr_right_hldr')//"div.job_list_row div.jlr_right_hldr");
+  var jobs = [];
+  for (var x in html_jobs) {
+    if (typeof html_jobs[x] == "function") continue;
+    if (typeof html_jobs[x] == "number") continue;
+    var job = {};
+    var elem = html_jobs[x];
+    job.title = elem.querySelector("div.jlr_title p").textContent.split('-').shift();
+    job.url = elem.querySelector("div.jlr_title p a").href.trim();
+    //var aux = elem.querySelector("div.jlr_title p.jlr_location a span.loc_icon.entypo").textContent.trim();
+    job.location = elem.querySelector("span.location").textContent.trim().split(' and ').shift();
+    /* job.dateposted_raw = elem.querySelector("div.jlr_content_half.jlr_content_right > p.jlr_secondary_preferred_field.job_post_date > span.jlr_value.font_bold.job_post_date > span.field_value").textContent.trim()
+            .replace("Jan", "01")
+            .replace("Feb", "02")
+            .replace("Mar", "03")
+            .replace("Apr", "04")
+            .replace("May", "05")
+            .replace("Jun", "06")
+            .replace("Jul", "07")
+            .replace("Aug", "08")
+            .replace("Sep", "09")
+            .replace("Oct", "10")
+            .replace("Nov", "11")
+            .replace("Dec", "12").replace(",", "/")
+            .replace(" ", "/").replace(" ", "");*/
+    job.temp = 000;
+    jobs.push(job);
+  }
+ // var job_fantasma = { title: window.location.href };
+  //jobs.push(job_fantasma);
+  out["jobs"] = jobs;
+  return out;
+})();

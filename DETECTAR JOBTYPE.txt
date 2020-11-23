@@ -1,0 +1,1 @@
+.search(/full time|part time|cda|cdi|ccd|time|permanent|PRN|Poste à temps plein/i)

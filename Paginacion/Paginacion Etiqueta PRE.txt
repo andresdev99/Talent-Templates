@@ -1,0 +1,44 @@
+(function () {
+  var out = {};
+
+  if (typeof pass_it == "undefined") pass_it = {};
+  if (typeof msg == "undefined") msg = function (x) { return x; };
+
+  var element = document.querySelector("pre").textContent;
+  var element = JSON.parse(document.querySelector("pre").textContent);
+  //Aqui sacamos los jobs
+  var expected_jobs_str = element["data"]; // SE AGREGA SELECTOR DE CONTADOR DE JOBS
+  //msg(expected_jobs_str);
+  //msg("elementos del JSON:"+element.pagination.total);
+  if (!pass_it["cont"]) {
+    out["pass_it"] = {
+      "cont": 0,
+      "jobs": element.pagination.total,
+      "expected_jobs":expected_jobs_str
+    };
+  } else {
+    out["pass_it"] = pass_it;
+  }
+
+  //msg("Contador de jobs:  "+out["pass_it"]["cont"]+"  / Total jobs:  "+out["pass_it"]["jobs"])
+
+ // if(out["pass_it"]["jobs"] < 10){
+  if(out["pass_it"]["cont"]+9 < out["pass_it"]["jobs"]){
+   // out["has_next_page"] = false;
+  //}
+  //else if (out["pass_it"].jobs > 0) {
+    out["pass_it"].cont += 9;
+    var url = "https://www.airforce.com/api/careers/search?limit=9&offset=" + out["pass_it"].cont+"&orderBy=slug&order=desc";
+    //msg(url);
+    window.location.href = url;
+    out["has_next_page"] = true;
+  } else {
+    out["has_next_page"] = false;
+  }
+
+  //out["wait"] = true;
+  //out["pic"] = true;
+  //out["html"] = true;
+  out.waitFor = 'pre';
+  return out;
+})();

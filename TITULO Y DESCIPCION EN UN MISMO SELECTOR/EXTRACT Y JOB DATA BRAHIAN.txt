@@ -1,0 +1,80 @@
+(function() {
+  var out = {};
+  var html_jobs = document.querySelectorAll('font[size="5"]');
+  var jobs = [];
+  for(var x in html_jobs){
+    if(typeof html_jobs[x] =="function") continue;
+    if(typeof html_jobs[x] =="number") continue;
+    var job = {};
+    var elem = html_jobs[x];
+    job.title = elem.textContent.trim();
+    //job.location = elem.querySelector('').textContent.trim();
+    job.url = window.location.href;
+    job.location = '';  //Jobs, has´t location; set manually.
+
+    var remove_selectors = [];
+
+    var full_html = document.querySelector('table#bodyTable');
+    //var full_html = document.querySelectorAll('')[x];
+
+    // remove something from the jobdatata
+    if (remove_selectors.length > 0) remove_selectors.forEach(remove_selector => {if(full_html.querySelector(remove_selector)) full_html.querySelector(remove_selector).remove();});
+    if (typeof cleanHTML == "undefined") cleanHTML = function(x){return x};
+    if (typeof msg == "undefined") msg = console.log;
+
+
+    job.html        = full_html.innerHTML.trim();
+    job.jobdesc     = full_html.textContent.trim();
+    job.html        = job.html.split('right thing to do!')[x]+"right thing to do!";
+
+    for(const a of document.querySelectorAll('span[data-ada-original-font-weight="400"][data-ada-original-font-size="24"]')){
+      a.remove();
+    }
+
+    const breackpoint = '<font size="5" data-ada-original-font-size="24">' + job.title + '</font>';
+    const breackpoint2 = '<b data-ada-original-font-size="24">' + job.title + '</b>';
+    job.html = removeTextBefore(job.html, breackpoint, false);   
+    job.html = removeTextBefore(job.html, breackpoint2, false);   
+
+    job.html        = cleanHTML(job.html);
+    // job.html = removeTextBefore(job.html, 'We have hard-working', false);
+    //  job.html = removeTextBefore(job.html, 'right thing to do!', true);
+    //  job.html = removeTextBefore(job.html, 'You will sale', true);
+    //  job.html = removeTextBefore(job.html, 'You will market personal', true);
+    //  job.html = removeTextBefore(job.html, 'You will service personal', true);
+
+    var tmp          = document.createElement('DIV');
+    tmp.innerHTML    = job.html;
+    job.jobdesc      = tmp.textContent+"right thing to do!".trim();
+    job.jobdesc      = cleanHTML(job.jobdesc);
+
+    job.temp = '0000-0000-0-bs' //Cualquier duda consultar este codigo con brahian-stiben.
+    jobs.push(job);
+  } 
+
+  out["jobs"]= jobs;
+  return out;
+})();
+
+function removeTextBefore(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).pop();
+    if (!flag) {
+      newHtml = "<h3>" + text + "</h3>" + newHtml;
+    }       
+  }
+  return newHtml;
+}
+
+function removeTextAfter(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).shift();
+    if (!flag) {
+      newHtml = newHtml + "<p>" + text + "</p>";
+    }       
+  }
+  return newHtml;
+}
+

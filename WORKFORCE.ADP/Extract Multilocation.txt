@@ -1,0 +1,70 @@
+(function() {
+  var out = {};
+
+  if(typeof pass_it == "undefined") pass_it = {};
+
+  var returnedJobs = [];	  
+  var element = document.querySelector("body, br").textContent;
+  var json = JSON.parse(element);
+  msg(json.jobRequisitions.length)
+  if(json.jobRequisitions.length > 1){
+    var expected_jobs_str = json.meta.totalNumber;
+    if (!pass_it["cont"]) {
+      out["pass_it"] = {
+        "cont": 0,
+        "jobs": 0,
+        //"total_jobs":0,
+        "expected_jobs":expected_jobs_str
+      };
+    } else {
+      out["pass_it"] = pass_it;
+    }
+    var jobs = json.jobRequisitions;
+
+    for(i in jobs) {
+      var job = {};/*init*/
+
+      job.title = jobs[i].requisitionTitle;
+      job.title = job.title.replace(/part time|full time|part-time|full-time|H\/F/gi,'').trim() //remove words and phrases
+      job.title = job.title.replace(/\([^)]*\)/g, "").replace(/[.*+?^${}()|[\]\\]/g, "").trim()
+      //job.location = jobs[i].requisitionLocations[0].nameCode.shortName;
+
+      job.dateposted_raw = jobs[i].postDate.split('T').shift();
+
+      job.url = "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=71050f15-07b9-497d-8a36-0411a337ae1a&ccId=2580387426_685&jobId="+jobs[i].itemID;
+      job.temp = 124521;
+	//msg("\x1b[41m"+job.title)
+      if(jobs[i].requisitionLocations.length>1)
+      {
+        //msg("\x1b[45mENTRO!!!")
+        //MULTILOCATION
+        for (var x in jobs[i].requisitionLocations)
+        {
+          let jobx = {};
+          jobx.title = job.title;
+          jobx.location = jobs[i].requisitionLocations[x].nameCode.shortName;
+          jobx.url = job.url;
+          jobx.dateposted_raw = job.dateposted_raw;
+          returnedJobs.push(jobx);
+        }
+      }//FIN MULTILOCATION
+      else
+      {
+        job.location = jobs[i].requisitionLocations[0].nameCode.shortName;
+        returnedJobs.push(job);
+      }
+    }
+  }
+  //msg(jobs);
+  //msg(returnedJobs.length);
+
+  if (returnedJobs.length < 1) {
+    var job_g = { title: 'ghost' };
+    returnedJobs.push(job_g);
+  }
+
+  //out["pass_it"].jobs = returnedJobs.length;
+  //out["pass_it"].total_jobs = out["pass_it"].total_jobs + out["pass_it"].jobs;
+  out["jobs"]= returnedJobs;
+  return out;
+})();

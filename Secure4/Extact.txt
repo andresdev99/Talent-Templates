@@ -1,0 +1,50 @@
+(function () {
+    var jobs = [];
+    var out = {};
+    var json;
+
+    $.ajax({ 
+    	url: 'https://secure4.saashr.com/ta/rest/ui/recruitment/companies/%7C6158166/job-requisitions?offset=0&ein_id=&_=1601830863931', // 1) url
+        headers: {                                                      
+        	"Accept": "application/json, text/javascript, */*; q=0.01",
+            "Content-Type":"application/json;charset=UTF-8"                               
+        },
+        type: 'GET',                                                                
+        dataType: "json",                                                              
+        async: false,
+        success: function (result) {
+        	msg("SUCCES");
+        	json = result.job_requisitions; 
+
+        	for (var i = 0; i < json.length; i++) {
+        		var job = {};
+
+            	job.title = json[i].job_title;
+            
+          		var dom = window.location.protocol + "//" + window.location.hostname + window.location.pathname + "?ShowJob=";
+            	job.url = dom + json[i].id;
+
+            	var city    = json[i].location.city;
+            	var state   = json[i].location.state;
+            	var country = json[i].location.country;
+
+            	var loc = [];
+
+            	if (city) loc.push(city);
+            	if (state) loc.push(state);
+            	if (country) loc.push(country);
+
+            	job.location = loc.join(", ");          
+            	job.temp = 2020;
+
+            	jobs.push(job);
+        	}
+        },
+       	error: function (error) {
+        	msg(error);
+        }
+    });
+    out["jobs"] = jobs;
+    return out;
+})();
+

@@ -1,0 +1,57 @@
+(function () {
+  var jobs = [];
+  var out = {};
+   var cont = 840;
+  var json;
+  if (typeof msg == "undefined") msg = console.log;
+   //do {
+
+  //var data = ;
+
+  $.ajax({
+    url: 'https://www.baitoru.com/tohoku/jlist/hokkaido/page'+cont+'/',                                            // 1) url
+    headers: {
+      "accept": "text/html, */*; q=0.01",
+      "accept-language": "es-419,es;q=0.9,en;q=0.8",
+      "content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+    },
+    type: 'POST',                                        // 3) tipo
+    dataType: "html",                                  // 4) data que retorna
+    //data: data,
+    //data: JSON.stringify(data),
+    async: false,
+    success: function (result) {
+      msg("loading jobs...");
+      let div = document.createElement("div")
+      div.innerHTML = result;
+      let html_jobs = div.querySelectorAll('div#async_content2 > article[class^="list-jobListDetail"]');
+      //msg(json.length);
+      for (var x in html_jobs) {
+        if (typeof html_jobs[x] == "function") continue;
+        if (typeof html_jobs[x] == "number") continue;
+        var job = {};
+        var elem = html_jobs[x];
+        if (elem.querySelector("div.pt04b > ul:nth-child(2), div.pt03 > dl:nth-child(1)")) {
+          var auxTitle = elem.querySelector("div.pt04b > ul:nth-child(2), div.pt03 > dl:nth-child(1)").textContent.trim()
+          if (auxTitle.search(/職種/gi) > -1)
+            job.title = auxTitle.split(/職種/i).pop().split(']').pop().trim();
+        }
+        if (!job.title) {
+          job.title = elem.querySelector("h3 a").textContent.trim();
+        }
+        job.url = elem.querySelector("h3 a").href.trim();
+        job.location = elem.querySelector("div.pt04b ul:nth-child(1) li:nth-child(1),  div.pt02b ul.ul02 li:nth-child(1)").textContent.split(']').pop().split('⁄').shift().trim();
+        
+        job.temp = 1;
+        jobs.push(job);
+      }
+       cont++;
+    },
+    error: function (error) {
+      msg(error);
+    }
+  });
+  //} while (cont < 1040);                                 // 6) condicion de parada
+  out["jobs"] = jobs;
+  return out;
+})();

@@ -1,0 +1,15 @@
+     function dateVerification(expDate) {​​​​​​​
+    /*JavaScript date input formats
+    ISO Date    "2015-03-25" (The International Standard)
+Short Date    "03/25/2015"
+Long Date    "Mar 25 2015" or "25 Mar 2015"*/
+    
+var expDate = new Date(expDate);
+    //update job date + 6 months if needed
+expDate.setMonth(expDate.getMonth()+6);
+    var today = new Date();
+    if( expDate >= today )
+        return true;
+    else
+            return false;
+}​​​​​​​

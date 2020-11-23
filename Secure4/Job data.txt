@@ -1,0 +1,72 @@
+(function() {
+  var out = {};
+  var job = {};
+  var selector = '.job-details > ul';
+  var remove_selectors = ['a', 'img', 'video', 'button', 'input', 'style', 'javascript', 'script'];
+
+  if (document.querySelector(selector)) {
+    var search_salary = document.querySelectorAll('.det-level-2 .field-value');
+    for (var i = 0; i < search_salary.length; i++) {
+      if (search_salary[i].textContent.indexOf("$") > -1) {
+        job.source_salary = search_salary[i].textContent.trim();
+      }
+    }
+
+    if (document.querySelector(selector)) {
+      var search_type = document.querySelectorAll('.det-level-2 .field-value');
+      for (var i = 0; i < search_type.length; i++) {
+        if (search_type[i].textContent.match(/time/gi)) {
+          job.source_jobtype = search_type[i].textContent.trim();
+          msg("\x1b[45mTYPE====>"+job.source_jobtype)
+        }
+      }
+    }
+    var full_html = document.querySelector(selector);
+    // Remove something from the jobdatata
+    if (remove_selectors.length > 0) 
+      remove_selectors.forEach(function(e){ if (full_html.querySelector(e)) full_html.querySelector(e).remove();});
+
+    if (typeof cleanHTML === "undefined") cleanHTML = function(x){return x};
+    if (typeof msg === "undefined") msg = console.log;
+
+    job.html = full_html.innerHTML.trim();    
+    job.html = cleanHTML(job.html);
+    var tmp = document.createElement('div');
+    tmp.innerHTML = job.html;
+    job.jobdesc = tmp.textContent.trim();
+    job.jobdesc = cleanHTML(job.jobdesc);
+
+    job.html = removeTextBefore(job.html, "Description", true);
+    //job.html = removeTextAfter(job.html, "Additional Information", true);
+
+    if (job.jobdesc.length < 200) {
+      job.flag_active = 0; 
+      job.html= "";  
+      job.jobdesc = '';
+    }
+  } else {
+    job.flag_active = 0; 
+    job.html = ""; 
+    job.jobdesc = '';
+  }
+  out["job"] = job;
+  return out;
+})();
+
+function removeTextBefore(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) 
+    newHtml = newHtml.split(text).pop();
+  if (!flag) 
+    newHtml = "<h3>" + text + "</h3>" + newHtml;
+  return newHtml;
+}
+
+function removeTextAfter(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) 
+    newHtml = newHtml.split(text).shift();
+  if (!flag) 
+    newHtml = newHtml + "<p>" + text + "</p>";    
+  return newHtml;
+}

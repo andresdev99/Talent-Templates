@@ -1,0 +1,18 @@
+(function () {
+    let out = {};
+    try {
+        const element = document.querySelector("pre").textContent;
+        if (!element) {
+            out["has_next_page"] = false;
+        }
+        //msg(element);
+        const json = JSON.parse(element);
+        const jobs = json.jobRequisitions;
+        out["json"] = jobs;
+    } catch (error) {
+        out["wait"] = 500;
+
+    }
+
+    return out;
+})();

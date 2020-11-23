@@ -1,0 +1,7 @@
+monthString("Noviembre");
+function monthString(monthh){
+    monthh = monthh.toLowerCase();
+    var months = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+    monthh = months.indexOf(monthh);
+    return monthh+1;
+  }

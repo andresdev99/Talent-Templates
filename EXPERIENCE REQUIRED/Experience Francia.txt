@@ -1,0 +1,55 @@
+var palabra_corte_inicial = 'expérience ';
+    var palabra_corte_final = ' ans';
+    for(const a of document.querySelectorAll('p')){
+        const text = a.textContent.trim();
+      if (/expérience /i.test(text) && /[0-9]/g.test(text) && / ans/.test(text)) {
+        job.experience_required = text.split(/expérience /i).pop().split(/ ans/).shift().trim();
+        if (true) {
+          job.experience_required = palabra_corte_inicial + job.experience_required + palabra_corte_final ;
+          msg('experience_required agregado')
+        }       
+      }
+    }
+
+//---->>>>ESPERANDO A LIMPIAR Y DESPUES .POP DESDE PRIMER NUMERO
+ var exp;
+    for (const a of document.querySelectorAll('li')) {
+      if (/\d/.test(a) && (a.textContent.match(/expérience/gi) && a.textContent.match(/an/gi))|| (a.textContent.match(/d’une/gi) && a.textContent.match(/expérience/gi))){ 
+        console.log(a.textContent)//can use search or match methods
+        exp = a.textContent.trim().replace("Bac+2","").replace("Bac +2","").replace("Bac +3","");//another querySelector if needed
+        console.log("TEXTO LIMPIADO-----> "+exp)
+        var num=exp.replace(/\D/g,'');
+        var del=String(num.length);
+        del=num[0]
+        console.log("NUMERO A BORRARRRR----->> "+del)
+        if(/\d/.test(exp)) {
+          exp=exp.split("d’expérience").shift().split("sur").shift().split("minimum").shift().split(".").shift().split(";").shift().split(del).pop().trim();
+          job.experience_required=del+" "+exp
+          //a.remove(); //if you want to remove this selector
+          msg(`\x1b[45m ${job.experience_required}`);
+        }
+      }
+    }
+
+///////*.SHIFT SI CONTIENE "ANS(AÑOS)"
+ var exp;
+  for (const a of document.querySelectorAll('p')) {
+    if ((a.textContent.match(/expérience/gi))|| (a.textContent.match(/d’une/gi) && a.textContent.match(/expérience/gi))){ 
+      console.log(a.textContent)//can use search or match methods
+      exp = a.textContent.trim().replace("Bac+2","").replace("Bac +2","").replace("Bac +3","").split("/contrôle").pop();//another querySelector if needed
+      console.log("TEXTO LIMPIADO-----> "+exp)
+      var num=exp.replace(/\D/g,'');
+      var del=String(num.length);
+      del=num[0]
+      console.log("NUMERO A BORRARRRR----->> "+del)
+      if(/\d/.test(exp)) {
+        exp=exp.split("d’expérience").shift().split("dans").shift().split(".").shift().split(del).pop().trim();
+        if(exp.includes("ans")){
+          job.experience_required=del+" "+exp.split("ans").shift()+" ans";
+        }else{
+          job.experience_required=del+" "+exp;}
+        //a.remove(); //if you want to remove this selector
+        msg(`\x1b[45m ${job.experience_required}`);
+      }
+    }
+  }

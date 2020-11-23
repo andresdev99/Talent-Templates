@@ -1,0 +1,74 @@
+$city = trim((string) $j->city);
+$city = str_replace("/Multiple Territories in/g", "", $city);
+$city = str_replace("| Multiple Territories", "", $city);
+$city = str_replace("/Multiple Territories/g", "", $city);
+$city = str_replace("SouthEast &amp; International Territories,", "", $city);
+$city = str_replace("/Multiple Territories Available,|Contract \/|Multiple Territories,|Remote Position,|Can be based anywhere,|(South Shore, Eastern Townships)|Nationwide,|Nationwide/gi", "", $city);
+$state = trim((string) $j->state);
+$country = trim((string) $j->country);
+    
+$arrloc=array();
+if($city) $arrloc[] = $city;
+if($state) $arrloc[] = $state;
+if($country) $arrloc[] = $country;
+$loc = implode(", ", $arrloc);
+
+
+$job_description = array();
+$description = (String) $j->description;
+$keywords = (String) $j->keywords;
+$requirements = (String) $j->requirements;
+$perks = (String) $j->perks;
+
+if($description) $job_description[] = $description;
+if($keywords) $job_description[] = $keywords;
+if($requirements) $job_description[] = $requirements;
+if($perks) $job_description[] = $perks;
+$jobdesc = implode("<br>", $job_description);
+
+$patron = '/<\/?[^>]+(>|$)|&amp;|&amp;#13;|PAGE-BREAK/';
+$sustitucion = '';
+$jobdesc = preg_replace($patron, $sustitucion, $jobdesc);
+
+
+$job=array();
+$job['temp']=1;
+$job['title'] = trim((String) $j->title);
+$job['title'] = str_replace("/&amp;/gi", "&", $job['title']);
+$job['title'] = str_replace("- www.shredshop.com", "&", $job['title']);
+$job['location'] = ($loc) ? $loc : 'US';
+$job['location'] = str_replace("Remote,", "", $job['location']);
+$job['location'] = str_replace("Remote / Virtual,", "", $job['location']);
+$job['location'] = str_replace("Remote / Work from home,", "", $job['location']);
+$job['location'] = str_replace("Remote / Work From Home,", "", $job['location']);
+$job['location'] = str_replace("(NB)", "Manhattan Beach, CA, US", $job['location']);
+$multilocation = "|";
+$job['source_jobtype'] = trim((String) $j->jobtype);
+$job['source_empname'] = trim((String) $j->company);
+$job['source_empname'] = str_replace("/&amp;/gi", "&", $job['source_empname']);
+$job['url'] = trim((String) $j->url);
+$job['html'] = $jobdesc;
+$job['jobdesc'] = $job['html'];
+$jobdate = trim((String) $j->date);
+$valores = explode(' ', $jobdate);  //SE HACE EXPLODE POR ESPACIO
+// month/day/year
+
+$month = $valores[2];
+
+if(strpos($month, "Jan")!== false){$month = "01";}
+if(strpos($month, "Feb")!== false){$month = "02";}
+if(strpos($month, "Mar")!== false){$month = "03";}
+if(strpos($month, "Apr")!== false){$month = "04";}
+if(strpos($month, "May")!== false){$month = "05";}
+if(strpos($month, "Jun")!== false){$month = "06";}
+if(strpos($month, "Jul")!== false){$month = "07";}
+if(strpos($month, "Aug")!== false){$month = "08";}
+if(strpos($month, "Sep")!== false){$month = "09";}
+if(strpos($month, "Oct")!== false){$month = "10";}
+if(strpos($month, "Nov")!== false){$month = "11";}
+if(strpos($month, "Dec")!== false){$month = "12";}
+
+$jobdate = $month."/".$valores[1]."/".$valores[3];
+$job['dateposted_raw'] = $jobdate;
+
+//print_r($job['dateposted_raw']."||");

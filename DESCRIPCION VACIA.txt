@@ -1,0 +1,3 @@
+job.flag_active = 0; 
+job.html="";
+job.jobdesc="";

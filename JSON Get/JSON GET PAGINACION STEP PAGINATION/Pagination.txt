@@ -1,0 +1,22 @@
+/*(function() {
+    var out = {};  
+    out["has_next_page"] = false;  
+    out["wait"] = false;
+    return out;
+})();*/
+
+(function() {
+  	var out = {};
+	out["pass_it"] = pass_it;
+  	if (out["pass_it"]["jobs"]>=1 ) {
+      	
+		out["has_next_page"] = true;
+        out["pass_it"].cont ++;
+	}
+     else {
+    	out["has_next_page"] = false;
+    }
+
+  	out.wait = true;
+  	return out;
+})();

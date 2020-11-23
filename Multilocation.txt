@@ -1,0 +1,38 @@
+(function() {
+  var out = {};
+  var html_jobs = document.querySelectorAll(".list-data");
+  var jobs = [];for(var x in html_jobs){
+    if(typeof html_jobs[x] =="function") continue;
+    if(typeof html_jobs[x] =="number") continue;
+    var job = {};
+    var elem = html_jobs[x];
+    job.title = elem.querySelector(".list-data .job-title").textContent.trim();
+    job.url = elem.querySelector("h4  a").href.trim();
+    if(elem.querySelector(".job-location"))
+      job.location = elem.querySelector(".job-location").textContent.trim();
+    else
+      job.location = "Santigo de los caballeros,DO";
+
+    job.dateposted_raw = elem.querySelector('div.job-date').textContent.trim();
+    job.dateposted_raw = dateAgo(job.dateposted_raw, ' ', 1, 2);
+    job.temp = 1;
+    if(job.location.indexOf(",")>-1 ){
+      let locs = job.location.split(',');
+//MULTILOCATION
+      locs.forEach(function(location){
+        let jobx = {};
+        jobx.title = job.title;
+        jobx.location = location.trim();
+        jobx.url = job.url;
+        jobx.dateposted_raw = job.dateposted_raw;
+	jobx.temp = job.temp;
+        jobs.push(jobx);
+      })
+    }//FIN MULTILOCATION
+    else
+      jobs.push(job);
+  } 
+
+  out["jobs"]= jobs;
+  return out;
+})();

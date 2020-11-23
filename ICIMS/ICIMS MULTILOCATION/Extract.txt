@@ -1,0 +1,71 @@
+(function () {
+  var out = {};
+  out["wait"] = true;
+  var jobsSelector = '.iCIMS_JobsTable > div.row'
+  var returnedJobs = [];
+  var html_jobs = [];
+
+  if (typeof pass_it == "undefined") pass_it = {};
+  if (typeof msg == "undefined") msg = console.log;
+
+  if (!pass_it["cont"]) {
+    out["pass_it"] = {
+      "cont": 0,
+      "jobs": 0
+    };
+  } else {
+    out["pass_it"] = pass_it;
+  }
+
+  var iframe_selector = "#icims_iframe_span > iframe";   
+  var iframeDocument = document.querySelector(iframe_selector).contentWindow.document;
+
+  html_jobs = iframeDocument.querySelectorAll(jobsSelector);
+
+  for(var x in html_jobs){
+    if(typeof html_jobs[x] =="function") continue;
+    if(typeof html_jobs[x] =="number") continue;
+    var elem = html_jobs[x];
+
+    var loc = elem.querySelectorAll("dl:not(:first-child):not(:last-child) dd");
+    loc.forEach( function (element){
+      var job = {};
+
+      job.title = elem.querySelector("a > span:nth-child(2)").textContent.trim();
+      job.url = elem.querySelector("a").href.trim()+"&mode=job&iis=Neuvoo";
+      job.location = element.textContent.trim().split("-").reverse().join(", ").replace("Smart","").replace(/, Smart/gi,"");  
+
+      if(elem.querySelector("div.iCIMS_JobHeaderGroup dl:nth-child(4) dd")){
+        job.source_jobtype = elem.querySelector("div.iCIMS_JobHeaderGroup dl:nth-child(4) dd").textContent.trim();
+      }
+      if(job.location.match(/East bay/gi)){job.location="San Francisco, CA, US"}
+      var validarOrderLocation=job.location.split(",");
+      if (validarOrderLocation[0].length<3)
+      {
+        job.location =job.location.split(",").reverse().join(", ");
+      }
+      //job.logo = elem.querySelector("").getAttribute("src").trim();
+      //job.source_apply_email = elem.querySelector("").textContent.trim();
+      //job.source_empname = elem.querySelector("").textContent.trim();
+      //job.source_salary = elem.querySelector("").textContent.trim();
+      job.temp = 19992020;
+      if(job.location.indexOf("/")>-1)
+      {
+        var locc=job.location.split("/");
+        locc.forEach(function(eleme){
+          var jobx={...job}
+          jobx.location = eleme.trim();
+          if(jobx.location.indexOf("San Antonio")>-1) {jobx.location = "San Antonio, US";}
+          returnedJobs.push(jobx);
+        })
+      }
+      else{
+        returnedJobs.push(job);}
+    }, elem);
+  }
+
+  out["pass_it"]["jobs"] = returnedJobs.length;
+  out["jobs"] = returnedJobs;
+  return out;
+})();
+

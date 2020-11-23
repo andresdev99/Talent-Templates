@@ -1,0 +1,53 @@
+(function() {
+    var out = {};
+    var jobs = [];
+    
+    var iframes = document.querySelector("#icims_content_iframe"); //get Iframes page
+    var iframeDocument = iframes.contentWindow.document; //now we have the iframe
+    var html_jobs = iframeDocument.querySelectorAll("div.container-fluid.iCIMS_JobsTable > div.row");
+
+    for(var x in html_jobs){
+      if(typeof html_jobs[x] =="function") continue;
+      if(typeof html_jobs[x] =="number") continue;
+      var job = {};
+      var elem = html_jobs[x];
+      job.title = elem.querySelector("div.col-xs-12.title > a > span:nth-child(2)").textContent.trim();
+      job.url = elem.querySelector("div.col-xs-12.title > a").href.trim() +'&mode=job&iis=Neuvoo';
+      //job.url = 'https://social.icims.com/viewjob/'+ job.url +'&mode=job&iis=Neuvoo';
+      if(elem.querySelector("div.col-xs-6.header.left > span:nth-child(2)")){ 	
+      job.location = elem.querySelector("div.col-xs-6.header.left > span:nth-child(2)").textContent.trim();
+      }else{
+      job.location = 'United States';
+      }
+      //job.logo = elem.querySelector("").getAttribute("src").trim();
+      //job.source_apply_email = elem.querySelector("").textContent.trim();
+      //job.source_empname = elem.querySelector("").textContent.trim();
+      //job.source_jobtype = elem.querySelector("").textContent.trim();
+      //job.source_salary = elem.querySelector("").textContent.trim();
+
+      job.temp = 1;
+
+      if(job.location.indexOf("|")>-1){
+        var array = job.location.split("|");
+        //msg(array);
+        for (var i = 0; i < array.length; i++) {
+          var jobx = {};
+          
+          jobx.title = job.title;
+          jobx.url = job.url;
+          //jobx.source_empname = job.source_empname
+          jobx.dateposted_raw = job.dateposted_raw;
+          //jobx.temp = job.temp
+          jobx.location = array[i].trim();
+          jobx.location = jobx.location.split("-").reverse().join(", ");
+          jobs.push(jobx);
+        }
+      }else{
+        job.location = job.location.split("-").reverse().join(", ");
+        jobs.push(job);
+      }
+    } 
+
+    out["jobs"]= jobs;
+    return out;
+  })();

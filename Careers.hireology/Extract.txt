@@ -1,0 +1,28 @@
+(function() {
+  var out = {};
+  var html_jobs = document.querySelectorAll("div.careers-job-list div.careers-job-list__table-row");
+  var jobs = [];for(var x in html_jobs){
+    if(typeof html_jobs[x] =="function") continue;
+    if(typeof html_jobs[x] =="number") continue;
+    var job = {};
+    var elem = html_jobs[x];
+    job.title = elem.querySelector("a").textContent.trim();
+    job.url = elem.querySelector("a").href.trim();
+    job.location = elem.querySelector("div.careers-job-list div.careers-job-list__table-row div i.fa.fa-map-marker.fa-fw").nextSibling.textContent.trim();
+    if(job.location.indexOf("xx")>-1)
+    {
+		job.location = "Phoenix, AZ, US";
+    }
+    //job.dateposted_raw = elem.querySelector("").textContent.trim();
+    //job.logo = elem.querySelector("").getAttribute("src").trim();
+    //job.source_apply_email = elem.querySelector("").textContent.trim();
+    job.source_empname = elem.querySelector("div.careers-job-list div.careers-job-list__table-row div i.fa.fa-building.fa-fw").nextSibling.textContent.trim()
+    job.source_jobtype = elem.querySelector("div.careers-job-list div.careers-job-list__table-row div i.fa.fa-clock-o.fa-fw").nextSibling.textContent.trim()
+    //job.source_salary = elem.querySelector("").textContent.trim();
+    job.temp = 1;
+    jobs.push(job);
+  } 
+
+  out["jobs"]= jobs;
+  return out;
+})();

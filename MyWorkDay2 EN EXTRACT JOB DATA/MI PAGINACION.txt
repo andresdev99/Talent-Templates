@@ -1,0 +1,24 @@
+(function () {
+  var out = {};
+  if (typeof msg == "undefined") msg = function (x) { return x; };
+  out["pass_it"] = pass_it;
+  var element = document.querySelector("pre").textContent;
+  var json = JSON.parse(element);
+  var expected_jobs_str = json.body.children[0].facetContainer.paginationCount.value;
+  msg(`\x1b[45mEXPECTED->${expected_jobs_str}<=${out["pass_it"].jobs}`);
+  if(expected_jobs_str <= out["pass_it"].jobs){
+    msg("\x1b[41mNO HAY MAS PAGINAS")
+    out["has_next_page"] = false;
+  }
+  else if (out["pass_it"].jobs > 0) {
+    msg("\x1b[42mSIGUIENTE PAGINA")
+    out["pass_it"].cont += 50;
+    var url = "https://wd5.myworkdaysite.com/recruiting/ibtx/Independent_Bank/fs/searchPagination/318c8bb6f553100021d223d9780d30be/" + out["pass_it"].cont;
+    msg("\x1b[45m"+url);
+    window.location.href = url;
+    out["has_next_page"] = true;
+  }
+
+  out.waitFor = 'pre';
+  return out;
+})();

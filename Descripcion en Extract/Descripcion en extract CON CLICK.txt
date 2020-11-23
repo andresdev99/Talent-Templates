@@ -1,0 +1,28 @@
+(function() {
+      var out = {};
+      var html_jobs = document.querySelectorAll(".career");
+      var jobs = [];for(var x in html_jobs){
+        if(typeof html_jobs[x] =="function") continue;
+        if(typeof html_jobs[x] =="number") continue;
+        var job = {};
+        var elem = html_jobs[x];
+        job.title = elem.querySelector("h2").textContent.trim();
+        job.url = "https://digipulsetech.com/currentopenings.php";
+        job.location = "Cherry Hill, NJ, Estados Unidos";
+        //job.source_apply_email = 'hr@digipulsetech.com';
+    
+  	var desc = document.querySelectorAll('.career p')[x];
+        job.html        = desc.innerHTML.trim();
+        job.jobdesc     = desc.textContent.trim();
+    
+        //job.html        = cleanHTML(job.html);
+       // job.jobdesc     = cleanHTML(job.jobdesc);
+    
+    
+        job.temp = 89;
+        jobs.push(job);
+      } 
+    
+      out["jobs"]= jobs;
+      return out;
+    })();

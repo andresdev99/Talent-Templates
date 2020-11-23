@@ -1,0 +1,4 @@
+job.dateposted_raw = contains(elem.querySelectorAll("span"),"Online since:").textContent.trim();//Le paso la etiqueta y lo despues de que texto quiero que me traiga
+
+function contains(elementos, texto) { var resultado = [].slice.call(elementos).filter(element => RegExp(texto).test(element.textContent)); return resultado[0]; // quitar el [0] si quieres todos los resultados 
+}

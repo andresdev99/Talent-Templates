@@ -1,0 +1,19 @@
+(function() {
+  	var out = {};
+	var next_page_selector = "li.nextpagination-btn >a"; //selector to identify the next button
+	var last_page_selector = ""; //selector to identify the last page
+ 	
+    var clickable_elem = document.querySelector(next_page_selector);
+  
+  if(clickable_elem){
+      	//go to next page
+    	clickable_elem.click();
+      	out["has_next_page"] = true;
+    } else {
+      	//try again
+    	out["has_next_page"] = false;
+    }
+
+  	out.waitFor = "";
+  	return out;
+})();

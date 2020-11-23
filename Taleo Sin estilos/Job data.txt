@@ -1,0 +1,75 @@
+(function() {
+  var out = {};
+  var job = {};
+  var selector = 'div[class="col-xs-12 col-sm-12 col-md-8"]';
+  var remove_selectors = ['div[class="col-xs-12 col-sm-12 col-md-8"] div[class="container-fluid"]'];
+  //var job = pass_it["job"];
+  if(document.querySelector(selector))
+  {
+
+    for(const a of document.querySelectorAll('a , img'))
+    {
+      		a.remove();
+    }  
+
+	let links = document.querySelectorAll('a,script,input,button,style');
+	links.forEach(elemento => elemento.remove());	
+  
+    var c= document.querySelectorAll('div[class="well oracletaleocwsv2-job-description"] >div[class="row"] >div');
+    for (var i = 0; i < c.length; i++) 
+    {
+      if(c[i].textContent.trim().indexOf('Location') > -1)
+      {
+      	job.location =c[i].textContent.replace('Location','').trim();
+      }
+    }
+    
+    var full_html = document.querySelector(selector);
+    // remove something from the jobdatata
+    if (remove_selectors.length > 0) remove_selectors.forEach(remove_selector => {if(full_html.querySelector(remove_selector)) full_html.querySelector(remove_selector).remove();});
+    if (typeof cleanHTML == "undefined") cleanHTML = function(x){return x};
+    if (typeof msg == "undefined") msg = console.log;
+	   for(const a of full_html.querySelectorAll('input, javascript, script, style')){
+        a.remove();//remueve selectores de style, js e inputs
+    }
+    job.html      = full_html.innerHTML.replace('www.fusefx.com','').trim();    
+
+    job.html      = cleanHTML(job.html);
+    var tmp       = document.createElement('div');
+    tmp.innerHTML = job.html;
+    job.jobdesc   = tmp.textContent.trim();
+    job.jobdesc   = cleanHTML(job.jobdesc);
+
+    //job.html = removeTextBefore(job.html, 'Job Summary', false);
+    job.html = removeTextAfter(job.html, 'Share', true);
+
+    if (job.html.length < 200) {job.flag_active = 0; job.html="";  job.jobdesc ='';}
+  }
+  else
+  {
+  	job.flag_active = 0; job.html=""; job.jobdesc ='';
+  }
+  out["job"] = job;
+  return out;
+
+})();
+function removeTextBefore(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).pop();
+    if (!flag) {
+      newHtml = "<h3>" + text + "</h3>" + newHtml;
+    }       
+  }
+  return newHtml;
+}
+function removeTextAfter(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).shift();
+    if (!flag) {
+      newHtml = newHtml + "<p>" + text + "</p>";
+    }       
+  }
+  return newHtml;
+}

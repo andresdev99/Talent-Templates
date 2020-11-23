@@ -1,0 +1,49 @@
+(function() {
+	var out = {};
+     var html_jobs = document.querySelectorAll("ul.search-results > li");
+  	var jobs = [];
+        var jobs_number = document.querySelectorAll("ul.search-results > li").length;    // número de jobs por página. Jobs amount per page
+        if (typeof pass_it == "undefined") pass_it = {};
+        if (typeof msg == "undefined") msg = console.log;
+
+        if (!pass_it["cont"]) {
+        out["pass_it"] = {
+        "cont": 1,
+        "jobs": jobs_number
+        };
+         } else {
+        out["pass_it"] = pass_it;
+        }
+        for(var x in html_jobs){
+    	if(typeof html_jobs[x] =="function") continue;
+      	if(typeof html_jobs[x] =="number") continue;   
+    	var job = {};
+    	var elem = html_jobs[x];  
+    	job.title = elem.querySelector("div.posting-title a").textContent.trim();
+    	job.url = elem.querySelector("div.posting-title a").href.trim();
+    	job.location = elem.querySelector("div.location").textContent.trim();
+        job.location = job.location.split("Highway 87,").pop().trim();
+        job.location = job.location.split("Road,").pop().trim();
+        job.location = job.location.split("Ave,").pop().trim();
+        job.location = job.location.split("Route 84,").pop().trim();
+        job.location = job.location.split("Blvd,").pop().trim();
+        job.location = job.location.split("Blvd.,").pop().trim();  
+        job.location = job.location.split("Street,").pop().trim();
+        job.location = job.location.split("Dr,").pop().trim();  
+        job.location = job.location.split("Avenue,").pop().trim();  
+        job.location = job.location.split("Schmidt,").pop().trim();  
+        job.location = job.location.replace(/0|1|2|3|4|5|6|7|8|9/gi,"").trim();
+        job.dateposted_raw = elem.querySelector("div.posting-date").textContent.trim();
+        job.dateposted_raw = job.dateposted_raw.split("day,").pop().trim();
+        //job.logo = elem.querySelector("").getAttribute("src").trim();
+		//job.source_apply_email = elem.querySelector("").textContent.trim();
+		//job.source_empname = elem.querySelector("").textContent.trim();
+		//job.source_jobtype = elem.querySelector("").textContent.trim();
+		//job.source_salary = elem.querySelector("").textContent.trim();
+       	job.temp = 1;
+    	jobs.push(job);
+  	} 
+  
+	out["jobs"]= jobs;
+  	return out;
+})();

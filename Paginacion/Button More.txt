@@ -1,0 +1,14 @@
+(function(){
+  var out = {};
+  var elmnt = document.querySelector(".load_more_jobs");
+  //msg(elmnt);
+  if (elmnt.style.display !== "none") {
+    elmnt.click();
+    out["has_next_page"] = true;
+  } else {
+    out["has_next_page"] = false;
+  }
+  out["html"]=true;
+  out["wait"]=2000;
+  return out;
+})();

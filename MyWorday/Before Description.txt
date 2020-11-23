@@ -1,0 +1,6 @@
+(function() {
+    var out = {};
+  var selector = 'div[id="richTextArea.jobPosting.jobDescription-input--uid8-input"] div:last-child';
+      out.waitFor = selector
+    return out;
+})();

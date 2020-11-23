@@ -1,0 +1,22 @@
+var text =document.querySelectorAll('li')
+    var exp;
+    for (var a=0;a<text.length;a++) {
+      if (text[a].textContent.match(/experience/gi) && text[a].textContent.match(/year/gi)){ 
+        console.log(text[a].textContent)//can use search or match methods
+        exp = text[a].textContent.trim().split(/Year College/gi).pop().replace("one",1)//another querySelector if needed
+        console.log("TEXTO LIMPIADO-----> "+exp)
+        var num=exp.replace(/\D/g,'');
+        var deletenumber=String(num.length);
+        deletenumber=num[0].trim()
+        var deleteword= exp.split(" ").filter(elem=> elem.indexOf("year")>-1)
+        deleteword =deleteword[0].trim()
+        console.log("NUMERO A BORRARRRR----->> "+deletenumber)
+        if(/\d/.test(exp)) {
+          exp=exp.split(deletenumber).pop().split(deleteword).shift().trim();
+          job.experience_required=deletenumber+" "+exp+" "+deleteword;
+          //a.remove(); //if you want to remove this selector
+          msg(`\x1b[45m${job.experience_required}`);
+          break;
+        }
+      }
+    }

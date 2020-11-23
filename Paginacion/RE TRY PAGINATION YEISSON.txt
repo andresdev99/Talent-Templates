@@ -1,0 +1,31 @@
+(function() {
+  var out = {};
+  //Mientras exista el selector de los jobs haga... (Así me aseguro que siempre entre en la validación)
+  if(document.querySelector('ul.dvinci-job-list.list-unstyled.ng-scope >li.ng-scope')){
+    //Stop es el valor donde saco el total se ve así : 20/33 - 33/33
+    var stop = document.querySelector('small[class="dvinci-page-label text-muted pull-right ng-binding"]').textContent.split('Stell').shift().split('/');    
+    
+     // Los imprimo para hacerle seguimiento
+      msg("===>" + stop[0])
+      msg("===>" + stop[1])
+    
+    //Valido que cuando ese dos valores sean iguales pare si no siga dando click
+    if(Number(stop[0]) == Number(stop[1])){
+      out["has_next_page"] = false
+    }else{
+     // Hago una espera para darle tiempo al boton de que cargue (Esto es opcional)
+      msg('--- Click al boton ----');
+      setTimeout(function(){    	
+      	 document.querySelector('a[class="dvinci-pagination-button btn btn-default"]').click();
+      		out["has_next_page"] = true
+  		},3000)     
+    }
+    
+  }else{
+    // Si no cumple vuelve a intentarlo hasta que entre en el ciclo
+   	msg('---- Retry ----')
+    out["has_next_page"] = true
+  }
+  out.waitFor = 'ul.dvinci-job-list.list-unstyled.ng-scope >li.ng-scope'; // Selector de los jobs
+  return out;
+})();

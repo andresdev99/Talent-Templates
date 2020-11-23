@@ -1,0 +1,80 @@
+(function() {
+  var out = {};
+  var job = {};
+  var selector = "div.job-preview-details";
+  var remove_selectors = ['div.mobile-apply-btn'];
+  if(!document.querySelector(selector))
+  {
+    job.flag_active = 0; 
+    job.html="";
+    job.jobdesc="";
+  }else{
+    //ELIMINAR SELECTOR CON .COM ETC..
+    /*
+	document.querySelectorAll("div.ResAts__card.col-md-8 div.ResAts__Viewport-content.js-jobs-content p").forEach(elem=>{
+      if(elem.textContent.match(/\.com|\.php|\.html|\.co|\.es/gi))
+      {
+        elem.remove();
+      }
+    })
+	*/
+    //var job = pass_it["job"];
+    var full_html = document.querySelector(selector);
+    // remove something from the jobdatata
+    if (remove_selectors.length > 0) remove_selectors.forEach(remove_selector => {if(full_html.querySelector(remove_selector)) full_html.querySelector(remove_selector).remove();});
+    if (typeof cleanHTML == "undefined") cleanHTML = function(x){return x};
+    if (typeof msg == "undefined") msg = console.log;
+    /*VALIDAR VARIABLES*/
+    /*
+    var validar = document.querySelectorAll('');
+	var valor; 
+    validar.forEach(elem=>{
+      if(elem.textContent.indexOf('')>-1)
+      {
+      	valor = elem.textContent.trim();
+		msg(`\x1b[45m=>${}`)
+      }
+    })
+    */
+    job.location =  document.querySelector('a.branding-link-color').textContent.trim();
+    msg(`\x1b[45m=>${job.location}`)
+    job.html      = full_html.innerHTML.trim();    
+    job.html = removeTextBefore(job.html, 'Position Summary', false);
+    job.html = removeTextAfter(job.html, 'Equal Employment Opportunity and Drug-Free Workplace', true);
+    job.html = removeTextAfter(job.html, 'We are a company that has', true);
+    job.html      = cleanHTML(job.html);
+    var tmp       = document.createElement('div');
+    tmp.innerHTML = job.html;
+    job.jobdesc   = tmp.textContent.trim();
+    job.jobdesc   = cleanHTML(job.jobdesc);
+    if(job.jobdesc.length<250)
+    {
+      job.flag_active = 0; 
+      job.html="";
+      job.jobdesc=""; 
+    }
+  }
+  out["job"] = job;
+  return out;
+
+})();
+function removeTextBefore(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).pop();
+    if (!flag) {
+      newHtml = "<h3>" + text + "</h3>" + newHtml;
+    }       
+  }
+  return newHtml;
+}
+function removeTextAfter(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).shift();
+    if (!flag) {
+      newHtml = newHtml + "<p>" + text + "</p>";
+    }       
+  }
+  return newHtml;
+}

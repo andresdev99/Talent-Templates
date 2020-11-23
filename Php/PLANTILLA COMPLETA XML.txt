@@ -1,0 +1,33 @@
+/*$city = trim((string) $j->city);
+$state = trim((string) $j->state);
+$country = trim((string) $j->country);
+
+$arrloc=array();
+if($city) $arrloc[] = $city;
+if($state) $arrloc[] = $state;
+if($country) $arrloc[] = $country;
+$loc = implode(", ", $arrloc);*/
+
+$job=array();
+$job['temp']=1;
+$job['title'] = (String) $j->title;
+$job['html']  = (String) $j->description;
+$job['jobdesc'] = strip_tags($job["html"]);
+//$job['location'] = $loc;
+$job['location'] = trim((String) $j->locationfreetext);
+$job['source_jobtype'] = trim((String) $j->jobtype);
+$job['source_salary'] = trim((String) $j->salary);
+$job['url'] = trim((String) $j->url)."?source=neuvoo+organic&utm_source=neuvoo&utm_medium=organic";
+$job['source_empname'] = trim((String) $j->brand);
+if(strpos(strtolower($job['source_empname']), "travis perkins plc")!==false) $job['logo'] = "https://1481692-1-4.cdn.4matnetworks.com/Graphics/Brands/travis-perkins-plc.png";
+else if(strpos(strtolower($job['source_empname']), "travis perkins")!==false) $job['logo'] = "https://1481692-1-4.cdn.4matnetworks.com/Graphics/Brands/travis-perkins.png";
+else if(strpos(strtolower($job['source_empname']), "wickes")!==false) $job['logo'] = "https://1481692-1-4.cdn.4matnetworks.com/Graphics/Brands/wickes.png";
+else if(strpos(strtolower($job['source_empname']), "city plumbing supplies")!==false) $job['logo'] = "https://1481692-1-4.cdn.4matnetworks.com/Graphics/Brands/cps.png";
+else if(strpos(strtolower($job['source_empname']), "benchmarx kitchens & joinery")!==false) $job['logo'] = "https://1481692-1-4.cdn.4matnetworks.com/Graphics/Brands/benchmarx.png";
+else if(strpos(strtolower($job['source_empname']), "pts")!==false) $job['logo'] = "https://1481692-1-4.cdn.4matnetworks.com/Graphics/Brands/pts.png";
+else if(strpos(strtolower($job['source_empname']), "bss")!==false) $job['logo'] = "https://1481692-1-4.cdn.4matnetworks.com/Graphics/Brands/bss.png";
+else if(strpos(strtolower($job['source_empname']), "ccf")!==false) $job['logo'] = "https://1481692-1-4.cdn.4matnetworks.com/Graphics/Brands/ccf.png";
+else if(strpos(strtolower($job['source_empname']), "keyline")!==false) $job['logo'] = "https://1481692-1-4.cdn.4matnetworks.com/Graphics/Brands/keyline.png";
+else if(strpos(strtolower($job['source_empname']), "tile giant")!==false) $job['logo'] = "https://1481692-1-4.cdn.4matnetworks.com/Graphics/Brands/tilegiant.png";
+else if(strpos(strtolower($job['source_empname']), "primaflow f&p")!==false) $job['logo'] = "https://1481692-1-4.cdn.4matnetworks.com/Graphics/Brands/Primaflowlogo.png";
+else if(strpos(strtolower($job['source_empname']), "rudridge")!==false) $job['logo'] = "https://1481692-1-4.cdn.4matnetworks.com/Graphics/Brands/rudridge.png";

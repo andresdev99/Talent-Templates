@@ -1,0 +1,5 @@
+//Elimina selectores con un texto en particular
+  let elements = document.querySelectorAll("p");
+  elements.forEach((elemnt) => {
+    if (elemnt.textContent.match(/www|[(]Tel.|Ausschreibungsverfahren/gi)) elemnt.remove();
+  });

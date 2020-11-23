@@ -1,0 +1,11 @@
+ if (typeof pass_it == "undefined") pass_it = {};
+  if (typeof msg == "undefined") msg = console.log;
+
+  if (!pass_it["cont"]) {
+      out["pass_it"] = {
+          "cont": 0,
+          "jobs": 0
+      };
+  } else {
+      out["pass_it"] = pass_it;
+  }

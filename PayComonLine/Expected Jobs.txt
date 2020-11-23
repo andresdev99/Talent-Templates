@@ -1,0 +1,14 @@
+(function() {
+	var out = {};
+    var selector = " div.pcm-pagination.pag-border.JobListings__pagination.inactive > div.row > div:nth-child(1) > span";
+  	var regex = /\d+/;
+  
+  	if (typeof msg === 'undefined') msg = console.log;
+
+	var expected_jobs_str = document.querySelector(selector).textContent.split(" of ").pop().trim();
+  	var expected_jobs = regex.exec(expected_jobs_str)[0];
+	
+  	out["expected_jobs"] = expected_jobs;
+
+  	return out;
+})();

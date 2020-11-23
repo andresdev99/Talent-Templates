@@ -1,0 +1,56 @@
+(function () {
+  var jobs = [];
+  var out = {};
+   var cont = 0;
+  var json;
+  var seguir=true;
+  
+  if (typeof msg == "undefined") msg = console.log;
+   do {
+
+  //var data = ;
+//	var currenttime=documen.querySelector("");
+  $.ajax({
+    url: 'https://phf.tbe.taleo.net/phf02/ats/careers/v2/searchResults?next&rowFrom='+cont+'&act=null&sortColumn=null&sortOrder=null&currentTime=1595866327390',                                            // 1) url
+    headers: {
+      "accept": "text/html, */*; q=0.01",
+      "accept-language": "en-US,en;q=0.9,es;q=0.8,es-ES;q=0.7,en-GB;q=0.6",
+      "content-type": "text/html;charset=UTF-8"
+    },
+    type: 'GET',                                        // 3) tipo
+    dataType: "html",                                  // 4) data que retorna
+    //data: data,
+    //data: JSON.stringify(data),
+    async: false,
+    success: function (result) {
+      msg("loading jobs...");
+      let div = document.createElement("div")
+      div.innerHTML = result;
+      let html_jobs = div.querySelectorAll('.oracletaleocwsv2-accordion-block');
+      //msg(json.length);
+      let stop=html_jobs.length;
+      if(stop<1){
+         seguir=false;
+         }
+      for (var x in html_jobs) {
+        if (typeof html_jobs[x] == "function") continue;
+        if (typeof html_jobs[x] == "number") continue;
+        var job = {};
+        var elem = html_jobs[x];
+       job.title = elem.querySelector(".oracletaleocwsv2-head-title>a").textContent;
+        job.url = elem.querySelector(".oracletaleocwsv2-head-title>a").href.trim();
+        job.location = elem.querySelector(" div.oracletaleocwsv2-accordion-head-info > div:nth-child(3)").textContent;
+        
+        job.temp = 1;
+        jobs.push(job);
+      }
+       cont+=10;
+    },
+    error: function (error) {
+      msg(error);
+    }
+  });
+  } while (seguir==true);                                 // 6) condicion de parada
+  out["jobs"] = jobs;
+  return out;
+})();

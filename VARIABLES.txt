@@ -1,0 +1,4 @@
+EXPERIENCIA =job.experience_required
+FECHA CIERRE=job.dateclosed_raw
+
+REEMPLAZAR LINK=job.link

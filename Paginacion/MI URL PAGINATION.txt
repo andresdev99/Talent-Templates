@@ -1,0 +1,21 @@
+(function(){
+  var out={};
+  var url=window.location.href;
+  url=url.split("page").shift();;
+  url=url+"page=";
+  var regex = /\d+/;
+  var cont=window.location.href;
+  var page = parseFloat(regex.exec(cont)[0]);
+  var pagefinal=page+1;
+  var size=document.querySelectorAll(".paging li").length;
+  if(page<size){
+    window.location.href=url+pagefinal
+    out["has_next_page"] = true;
+  }
+  else 
+  {
+    out["has_next_page"] = false;
+  }
+  out["wait"] = true;
+  return out;
+})();

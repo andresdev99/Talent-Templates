@@ -1,0 +1,70 @@
+(function() {
+  var out = {};
+  var job = {};
+  out["pass_it"] = pass_it;
+  var elems;
+  $.ajax({
+    url :  pass_it["job"].url,
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    type : 'GET',
+    // data : JSON.stringify(data),
+    dataType: "json",
+    async : false,
+    success : function(result){
+      elems = result;
+      //limit = result.positionLimit;
+      // for(var i = 0; i<json.length; i++) {
+      //var job = {};
+      if(elems.employee_type){
+        job.source_jobtype = elems.employee_type.name
+      }
+      var remove_selectors = [];
+      //var job = pass_it["job"];
+      // remove something from the jobdatata
+      if (typeof cleanHTML == "undefined") cleanHTML = function(x){return x};
+      if (typeof msg == "undefined") msg = console.log;
+      job.link = 'https://secure.entertimeonline.com/ta/StockandField.careers?rnd=PZJ&careerssearch=';
+      job.html      = elems.job_description;    
+      job.html = removeTextBefore(job.html, 'Essential Job Duties and Responsibilities', false);
+      //job.html = removeTextAfter(job.html, 'Application Instructions', true);
+      job.html      = cleanHTML(job.html);
+      var tmp       = document.createElement('div');
+      tmp.innerHTML = job.html;
+      job.jobdesc   = tmp.textContent.trim();
+      job.jobdesc   = cleanHTML(job.jobdesc);
+      //job.url = elem.positionOfUrl;                    
+      //job.dateposted_raw = elem.positionOfDatePosted;
+      //job.dateclosed_raw = elem.positionOfDateClosed;
+      //job.source_jobtype = elem.positionOfJobtype;
+      //job.source_salary = elem.positionOfSalary;         
+      //job.source_empname = elem.positionOfEmpname;
+      //job.logo = elem.positionOfLogo;
+      //job.source_apply_email = elem.positionOfEmail;
+    }
+  });
+  out["job"] = job;
+  return out;
+
+})();
+function removeTextBefore(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).pop();
+    if (!flag) {
+      newHtml = "<h3>" + text + "</h3>" + newHtml;
+    }       
+  }
+  return newHtml;
+}
+function removeTextAfter(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).shift();
+    if (!flag) {
+      newHtml = newHtml + "<p>" + text + "</p>";
+    }       
+  }
+  return newHtml;
+}

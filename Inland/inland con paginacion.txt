@@ -1,0 +1,183 @@
+-----Before Extract ------
+(function() {
+  let out = {};
+  let selectorJobs ="";
+  let selectorDescription="";
+  let elem;
+
+  /*if (typeof pass_it == "undefined") 
+      pass_it = {};
+
+  	if (!pass_it["cont"]) {
+    	out["pass_it"] = {
+      		"cont": 0,
+            "contPag": 0,
+		    "salir":false,
+            "selectorDescription": selectorDescription,
+			"selectorJobs:": selectorJobs
+    	};
+  	} else {*/
+  out["pass_it"] = pass_it;
+  //}
+  elem = document.querySelectorAll(selectorJobs)[out["pass_it"]["cont"]];
+
+  if (elem){
+    out["pass_it"].title = elem.querySelector("").textContent.trim()
+    out["pass_it"].location = elem.querySelector("").textContent.trim()
+    out["pass_it"].dateposted = elem.querySelector("").textContent.trim()
+
+    elem.click();
+    out.waitFor = selectorDescription;
+  }
+  else{
+    msg("EN EL FALSE DE BEFORE")
+    out["pass_it"]["salir"] = true;
+  }
+
+
+  return out;
+})();
+
+------ Extract ------
+(function() {
+
+  var out = {};
+  out.pic = true;
+  var jobs = [];
+  out["pass_it"] = pass_it;
+  if (out["pass_it"]["salir"]){
+    var job = {};
+    job.title = 'holaa'+out["pass_it"].cont;
+    jobs.push(job);
+  }else{
+
+    if (document.querySelector(out["pass_it"]["selectorDescription"])){
+      var job = {};
+      job.title = out["pass_it"]["title"]//document.querySelector("").textContent.replace(/\[.*?\]/g, '').trim();
+      job.location = out["pass_it"]["location"];//document.querySelector("").textContent.trim();
+      job.url = document.querySelector("").href.trim()//window.location.href;
+      /*var elements = document.querySelectorAll("");
+      for(var position in elements)
+      {
+        if(typeof elements[position] =="function") continue;
+        if(typeof elements[position] =="number") continue;
+        if(elements[position].textContent.includes("Salary:"))
+        {
+          job.salary = elements[position].textContent.split("Salary: ").pop().trim();
+        }
+        if(elements[position].textContent.includes("Job Type:"))
+        {
+          job.type = elements[position].textContent.split("Job Type: ").pop().trim();
+        }
+        if(elements[position].textContent.includes("Closing Date for applications:"))
+        {
+          job.dateposted_raw = elements[position].textContent.split("Closing Date for applications: ").pop().trim();
+        }
+      }
+	  */
+      job.html = document.querySelector("").innerHTML.trim();
+
+      job.html = removeTextBefore(job.html, "Required Technology and Skills:", false);
+      job.html = removeTextAfter(job.html, "Additional Information:", true);
+
+      job.html        = cleanHTML(job.html);
+      job.jobdesc     = job.html.replace(/&nbsp;/g," ").replace(/\<(.*?)\>/g, ""); // clean tags
+      job.jobdesc     = cleanHTML(job.jobdesc);
+      if(job.html.length > 50) job.flag_active = 0;
+      job.temp = 1;
+      jobs.push(job);
+
+    }	
+  }
+
+  out["jobs"] = jobs;
+  return out;
+
+
+})();
+
+function removeTextBefore(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).pop();
+    if (!flag) {
+      newHtml = "<h3>" + text + "</h3>" + newHtml;
+    }  		
+  }
+  return newHtml;
+}
+
+function removeTextAfter(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).shift();
+    if (!flag) {
+      newHtml = newHtml + "<p>" + text + "</p>";
+    }  		
+  }
+  return newHtml;
+}
+
+----- Pagination -----
+(function () {
+  var out = {};
+
+  out["pass_it"] = pass_it;
+  out["pass_it"].cont += 1;
+  out.pic = true;
+  //window.location.href = '';
+  if(document.querySelector(""))
+    document.querySelector("").click()
+
+  if (out["pass_it"]["salir"])
+    out["has_next_page"] = false;
+  else
+    out["has_next_page"] = true;
+
+  if(!out["has_next_page"])
+  {
+    msg("Proxima Pagina")
+    out["has_next_page"] = true;
+    out["pass_it"].cont = 0;
+    out["pass_it"]["salir"] = false;
+    out["pass_it"].contPag++;
+    if(out["pass_it"].contPag < document.querySelectorAll("").length)
+    {
+      msg("Pagina 2")
+      document.querySelectorAll("")[out["pass_it"].contPag].click();
+    }
+    else
+    {
+      out["has_next_page"] = false;
+      msg("FINAL PAGINATION");
+    }
+  }
+  msg(out["pass_it"].contPag);
+  //out.waitFor = out["pass_it"]["selectorJobs"]
+  //out.waitFor = out["pass_it"]["selectorDescription"]
+  return out;
+})();
+
+----- Infinite pagination ------
+(function() {
+	let out = {};
+  let selectorJobs ="";
+  let selectorDescription="";
+
+	if (typeof pass_it == "undefined") 
+      pass_it = {};
+
+  	if (!pass_it["cont"]) {
+    	out["pass_it"] = {
+      		"cont": 0,
+            "contPag": 0,
+		    "salir":false,
+            "selectorDescription": selectorDescription,
+			"selectorJobs:": selectorJobs
+    	};
+  	} else {
+    	out["pass_it"] = pass_it;
+    }
+  
+    return out;
+})();

@@ -1,0 +1,1 @@
+strpos($variable, "Lo que contiene")!== false

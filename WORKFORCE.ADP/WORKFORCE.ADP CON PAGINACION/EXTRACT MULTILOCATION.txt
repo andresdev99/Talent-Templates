@@ -1,0 +1,52 @@
+(function() {
+  var out = {};
+  var jobs = [];
+
+
+  var json =  JSON.parse(document.querySelector("pre").textContent);
+
+  var trabajos = json.jobRequisitions;
+
+  for(i in trabajos) {
+    var job = {};
+
+
+    job.title = trabajos[i].requisitionTitle;
+    job.url = "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=243a2c75-3a39-4b33-b10e-988ff3e9fc2b&ccId=19000101_000001&jobId="+ trabajos[i].itemID;
+    job.reqid = trabajos[i].itemID;
+    // job.logo = trabajos[i].;
+    //job.source_apply_email = trabajos[i].;
+    //job.source_empname = trabajos[i].;
+
+    if(trabajos[i].workLevelCode){
+      job.source_jobtype = trabajos[i].workLevelCode.shortName.replace(/regular/gi,"").split(/FTE/gi).shift().trim();
+    }
+    //job.source_salary = trabajos[i].;
+    //job.dateposted_raw = trabajos[i].;
+    var fecha = trabajos[i].postDate;
+    fecha = fecha.split("T")[0].split("-");
+    job.dateposted_raw = fecha[1]+'/'+fecha[2]+'/'+fecha[0];
+    job.temp = 1;
+    if(trabajos[i].requisitionLocations.length>1)
+    {
+      //MULTILOCATION
+      for (var x in trabajos[i].requisitionLocations)
+      {
+        let jobx = {...job};
+        jobx.location = trabajos[i].requisitionLocations[x].nameCode.shortName;
+        if(jobx.location.indexOf("US")>-1)
+          jobs.push(jobx);
+      }
+    }//FIN MULTILOCATION
+    else
+    {
+      job.location = trabajos[i].requisitionLocations[0].nameCode.shortName;
+      if(job.location.indexOf("US")>-1)
+        jobs.push(job);
+    }
+  }
+
+
+  out["jobs"]= jobs;
+  return out;
+})();

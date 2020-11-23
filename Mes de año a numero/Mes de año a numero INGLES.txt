@@ -1,0 +1,25 @@
+monthString("Noviembre");
+function monthString(monthh){
+    monthh = monthh.toLowerCase();
+    var months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+    monthh = months.indexOf(monthh);
+    return monthh+1;
+  }
+
+
+
+
+
+
+///////*********************************************ADELANTO
+var a=document.querySelectorAll(" ul > li:nth-child(2) > ul li")
+for (var x in a){
+if(typeof a[x] =="function") continue;
+    if(typeof a[x] =="number") continue;
+if(a[x].textContent.includes("Date Update")){
+var numbers=a[x].textContent.split(":").pop().trim().split(" ");
+var numbers=numbers[1].split(",").join("/")+numbers[2];
+var date=monthString(a[x].textContent.split(":").pop().trim().split(" ")[0]);
+date=date+"/"+numbers;
+}
+}

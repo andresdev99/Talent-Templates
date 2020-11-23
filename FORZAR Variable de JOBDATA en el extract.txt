@@ -1,0 +1,62 @@
+(function() {
+  var out = {};
+  var html_jobs = document.querySelectorAll("a.inbl.talentSoft-listItem");
+  var jobs = [];for(var x in html_jobs){
+    if(typeof html_jobs[x] =="function") continue;
+    if(typeof html_jobs[x] =="number") continue;
+    var job = {};
+    var elem = html_jobs[x];
+    job.title = elem.querySelector("p.jobName").textContent.trim();
+    job.url = elem.href.trim();
+    const dataFromDescription = getDescription(job.url); 
+    let div = document.createElement("div");     
+    div.innerHTML = dataFromDescription;
+    job.location =div.querySelector('div.detailsItem').textContent.trim();
+    ////////*****************************
+    //job.location = elem.querySelector("").textContent.trim();
+    //job.dateposted_raw = elem.querySelector("").textContent.trim();
+    //job.logo = elem.querySelector("").getAttribute("src").trim();
+    //job.source_apply_email = elem.querySelector("").textContent.trim();
+    //job.source_empname = elem.querySelector("").textContent.trim();		
+    if(elem.querySelector("span.contratType")){
+      job.source_jobtype = elem.querySelector("span.contratType").textContent.trim();}
+    //job.source_salary = elem.querySelector("").textContent.trim();
+    job.temp = 251;
+    jobs.push(job);
+  } 
+
+  out["jobs"]= jobs;
+  return out;
+})();
+/* Request to Description for extract job location*/
+function getDescription(url) {
+  var xhrrequest = new XMLHttpRequest();
+  xhrrequest.open("GET", url, false);     
+  var response = "";
+  xhrrequest.onreadystatechange = function() {
+    if(xhrrequest.readyState == 4 && xhrrequest.status == 200) response = xhrrequest.responseText;    
+  };
+  xhrrequest.send(); 
+  return response;
+}
+
+/////**********************
+function getDescription(url) {
+  var xhrrequest = new XMLHttpRequest();
+  xhrrequest.open("GET", url, false); //URL del ajax que trae la información del job
+  xhrrequest.setRequestHeader("Accept","application/json,application/xml");
+  xhrrequest.setRequestHeader("Accept-Language","en-CA,en;q=0.8,en-GB;q=0.6,en-US;q=0.4,es;q=0.2");
+  xhrrequest.setRequestHeader("Cache-Control","no-cache");
+  xhrrequest.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+  xhrrequest.setRequestHeader("Pragma","no-cache");
+  var response = "";
+  xhrrequest.onreadystatechange = function() {
+    if(xhrrequest.readyState == 4 && xhrrequest.status == 200) 
+    {
+      //console.log(xhrrequest.responseText);
+      response = xhrrequest.responseText;
+    }
+  };
+  xhrrequest.send(); 
+  return response;
+}

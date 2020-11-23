@@ -1,0 +1,115 @@
+
+(function() {
+  //************JSON***
+  var jobs = [];
+  var out = {};
+  var counter = 1;
+  var limit = 0;
+  var json;
+  //*******************
+  var out = {};
+  var html_jobs = document.querySelectorAll(".list-row.list-item.job-row");
+
+  var jobs = [];for(var x in html_jobs){
+    if(typeof html_jobs[x] =="function") continue;
+    if(typeof html_jobs[x] =="number") continue;
+    var job = {};
+    var elem = html_jobs[x];
+    job.title = elem.querySelector(".job-row-title").textContent.trim();
+    job.url = elem.querySelector("a").href.trim();
+    job.location="6913 E. Rembrandt, Suite 2, Mesa, Arizona 85212, US";
+    if(elem.querySelector(".job-row-subtext")){
+      job.dateposted_raw = elem.querySelector(".job-row-subtext").textContent.trim();
+      job.dateposted_raw = dateAgo(job.dateposted_raw," ",0,1);}
+    if(elem.querySelector(".job-row-salary").textContent.indexOf("Not specified")<0)
+      job.source_salary = elem.querySelector(".job-row-salary").textContent.trim();
+    var url;
+    //*************JSON
+    // do {
+    // var data = {"filters":[{"name":"country","label":"Country"},{"name":"state","label":"State/Province"},{"name":"city","label":"Town/City"},{"name":"zzreqWorkatHome","label":"Option to Work Remote"},{"name":"payGroupCode","label":"Job Function"},{"name":"zzreqJobType","label":"Job Type"},{"name":"typeOfFulltime","label":"Schedule"}],"results":{"pageTitle":"Search Results","zeroResultsMessage":"We're sorry but we have no job openings at this time that match your search criteria. Please try another search.","searchFailureMessage":"Oops! Something went wrong.  Search has encountered a problem. Try searching again","resultsFoundLabel":"results found","bookmarkText":"Bookmark This","pageSize":"100","sortOrder":"00001000","shareText":"Share","fields":[{"name":"ptitle","label":"Published Job Title"},{"name":"location","label":"Location"}]},"pagefilter":{"page":counter},"rl":"enUS"}
+    $.ajax({
+      url : 'https://app.hirenimble.com/api/search/roles/?query=&district=13&jobboard=47&subjects=620&subjects=621&subjects=779&subjects=622&subjects=623&subjects=624&subjects=625&subjects=626&subjects=627&subjects=628&subjects=629&subjects=630&subjects=631&subjects=632&subjects=633&subjects=634&subjects=635&subjects=636&subjects=637&subjects=638&subjects=706&subjects=711&subjects=1025&subjects=1376&subjects=639&subjects=640&subjects=641&subjects=642&subjects=643&subjects=644&subjects=645&subjects=646&subjects=656&subjects=699&subjects=700&subjects=701&subjects=702&subjects=703&subjects=704&subjects=705&subjects=707&subjects=708&subjects=709&subjects=808&subjects=810&subjects=811&subjects=647&subjects=648&subjects=649&subjects=650&subjects=710&subjects=778&subjects=878&subjects=879&subjects=1361&subjects=651&subjects=652&subjects=653&subjects=654&subjects=655&grades=0&grades=1&grades=2&grades=3&grades=4&grades=5&grades=6&grades=7&grades=8&grades=9&grades=10&grades=11&grades=12&grades=13',
+      headers: {
+        "accept":"application/json, text/plain, */*",
+        // "Content-Type": "application/json;charset=UTF-8"
+      },
+      type : 'GET',
+      // data : JSON.stringify(data),
+      dataType: "json",
+      async : false,
+      success : function(result){
+        json = result;
+        //limit = result.count;
+        //for(var i = 0; i<json.length; i++) {
+        var job = {};
+        var elem = json[x];
+        url = elem.id;                    
+        //job.dateposted_raw = elem.positionOfDatePosted;
+        //job.dateclosed_raw = elem.positionOfDateClosed;
+        //job.source_jobtype = elem.positionOfJobtype;
+        //job.source_salary = elem.positionOfSalary;         
+        //job.source_empname = elem.positionOfEmpname;
+        //job.logo = elem.positionOfLogo;
+        //job.source_apply_email = elem.positionOfEmail;
+
+
+
+        //****JSON
+
+        //job.dateposted_raw = elem.querySelector("").textContent.trim();
+        //job.logo = elem.querySelector("").getAttribute("src").trim();
+        //job.source_apply_email = elem.querySelector("").textContent.trim();
+        //job.source_empname = elem.querySelector("").textContent.trim();
+        //job.source_jobtype = elem.querySelector("").textContent.trim();
+        //job.source_salary = elem.querySelector("").textContent.trim();
+        //job.temp = 1;
+        //jobs.push(job);
+        //}
+        //counter = counter + 1;
+      },
+      error: function(error){
+        msg(error);
+      }
+    });
+    job.url="https://app.hirenimble.com/jobview/"+url;
+    job.temp = "1";
+    jobs.push(job);
+    // }while (counter < limit);
+  } 
+
+  out["jobs"]= jobs;
+  return out;
+})();
+/**
+ * [dateAgo Funcion para convertir texto a fechas]
+ * @param  {[String]} text                  [Valor en texto extraido]
+ * @param  {[String]} char_separator        [Caracter separador]
+ * @param  {[Number]} position_value_DWMY   [Posición donde esta el valor en numero]
+ * @param  {[Number]} position_word_DWMY    [Posición donde esta el valor o Days o Weeks etc]
+ * @return {[String]}                       [Retorna un valor en string pero con formato de fecha]
+ */
+function dateAgo (text, char_separator, position_value_DWMY, position_word_DWMY){
+  var numberDWMY = parseInt(text.trim().split(char_separator)[position_value_DWMY],10); //obtengo el valor numerico del dia, sem, mes o año
+  if(typeof text.split(char_separator)[position_word_DWMY]!=='undefined'){
+    var dayWeekMonthYear = text.split(char_separator)[position_word_DWMY]
+    }else{ var dayWeekMonthYear = text.split(char_separator)[text.split(char_separator).length - 1]};
+  var date_Now = new Date();  //declaro un objeto tipo fecha
+  var nDays = 0;
+  if (dayWeekMonthYear.toUpperCase().search(/TODAY|HOUR/g)>-1){nDays = 0;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('YESTERDAY')>-1) {nDays = 1;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('DAYS')>-1){nDays = numberDWMY;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('WEEK')>-1){nDays = numberDWMY * 7;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('MONTH')>-1){nDays = numberDWMY * 30;}
+  if (dayWeekMonthYear.toUpperCase().indexOf('YEAR')>-1){nDays = numberDWMY * 365;}
+  var dateJob    = date_Now.getDate() - nDays;     //resto dias de publicacion a la fecha actual
+  var get_date   = date_Now.setDate(dateJob);      //obtengo la cantidad de mseg. desde 1 de Enero de 1970
+  var datePosted = new Date(get_date);             //obtengo la fecha de publicacion.
+  //Obtengo dia mes y Año
+  var dd    = datePosted.getDate();                //devuelve el numero del dia del mes.
+  var mm    = datePosted.getMonth()+1;             //getMonth devuelve valores de 0 a 11, se suma uno para llevarlo de 1 a 12.
+  var yyyy  = datePosted.getFullYear().toString(); //devuelve el año.
+  if (dd < 10){dd ='0'+dd;}
+  if (mm<10){mm ='0'+ mm;}
+  dateJob= mm +'/'+dd+'/'+yyyy;
+  return dateJob;
+}

@@ -1,0 +1,89 @@
+(function () {
+    var jobs = [];
+    var out = {};
+    var cont = 0;
+    var total = 0;
+    var json;
+  
+ do {
+
+    var data = { 
+        "wpbh_search": 2,
+        "wpbh_sort": "",
+        "page": cont
+               };
+
+        $.ajax({
+	      url: 'https://www.hosthealthcare.com/search-jobs/?wpbh_category=&wpbh_specialty=&wpbh_location=',    // 1) url
+            headers: {                                                      
+              "accept": "text/html, */*; q=0.01",
+              "accept-encoding": "gzip, deflate, br",
+              "accept-language": "es-419,es;q=0.9,en;q=0.8",
+              "content-length": 31,
+              "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+              "cookie": 'referer=http%3A%2F%2Fboo1.neuvoo.com%2F; __cfduid=dd8736aa33def32d325f30e0efbf50f381603310730; _gcl_au=1.1.1983722758.1603310734; _ga=GA1.2.1133507408.1603310739; _gid=GA1.2.866949327.1603310739; _fbp=fb.1.1603310740594.195367426; __rafm=FS1603310741665; "__rasesh=RA:1603310742.3190199238.FBD5EF85191A2B4A2F1E443B7CF5431DAA72C678; fpestid=NtWgVHtvWoQ4kvFZjqVVKQohDFcP_Ny5Nioo4GGqfqGlz5DhmZhNDkPbRFyNcB6fJVDWpA',
+              "origin": "https://www.hosthealthcare.com",
+              "referer": "https://www.hosthealthcare.com/search-jobs/?wpbh_category=&wpbh_specialty=&wpbh_location=",
+              "sec-fetch-dest": "empty",
+              "sec-fetch-mode": "cors",
+              "sec-fetch-site": "same-origin",
+              "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36",
+              "x-requested-with": "XMLHttpRequest", // 2) headers
+            },
+            type: 'POST',                                        // 3) tipo
+            dataType: "html",                                   // 4) data que retorna
+            data: data,
+            //data: JSON.stringify(data),
+            async: false,
+            success: function (result) {
+                msg("SUCCES");
+               html = result.toString(); 
+               html =  html.replace(/\\n/gi, "");			// limpieza
+				html =  html.replace(/\\r/gi, "");
+				html =  html.replace(/\\t/gi, "");
+				html = html.replace(/\\"/gi, '"');
+				html =  html.replace(/\\u003c/gi, "<");
+				html =  html.replace(/\\u003e/gi, ">");
+				html =  html.replace(/\\\//gi, "/");
+              
+       			var div = document.createElement("div");
+				div.innerHTML = html;
+                var html_jobs = div.querySelectorAll("div.col-lg-6 div.job-block.container.bg-blue");
+                total = html_jobs.length;
+              	//msg("total: "+total);
+            //    json = result.;                                 // 5) ruta de los trabajos
+				msg(html_jobs.length);
+              	for(var x in html_jobs){
+					if(typeof html_jobs[x] =="function") continue;
+					if(typeof html_jobs[x] =="number") continue;
+					var job = {};
+					var elem = html_jobs[x];
+                          job.title = elem.querySelector("span.jt").textContent.trim();
+                          job.url = "https://www.hosthealthcare.com/"+elem.querySelector("div#jobsScroll div.col-lg-6 div.jb span").getAttribute("onclick").replace(/'/gi,"").split(" = ").pop().split(";").shift().replace(/ /gi,"%").trim();
+                          var validar = document.querySelectorAll('div#jobsScroll div.col-lg-6 span.d-inline-block.j-type');
+                          validar.forEach(elem=>{
+                            if(elem.textContent.indexOf('Location:')>-1)
+                            {
+                              job.location = elem.nextElementSibling.textContent.trim();
+                              msg(`\x1b[45m=>${job.location}`)
+                            }
+                          })
+                          msg(job.title);
+                          job.temp = 1;
+                          jobs.push(job);
+                }
+                cont = cont+1;
+              
+              msg('pagina: '+cont);
+              msg('jobs en esta pagina: '+total);
+            },
+            error: function (error) {
+                msg('error');
+            }
+        });
+    } while (total > 0);                                 // 6) condicion de parada
+
+    out["jobs"] = jobs;
+    return out;
+})();        
+        

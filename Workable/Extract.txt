@@ -1,0 +1,70 @@
+(function () {
+    var jobs = [];
+    var out = {};
+    var cont = 0;
+    var limit = 0;
+    var json;
+    var limit = 0;
+    if (typeof pass_it == "undefined") pass_it = {};
+
+    if (!pass_it["cont"]) {
+        out["pass_it"] = {
+            "cont": 1,
+            "jobs": 0,
+            "text_pag": "",
+            "num_jobs": 0
+
+        };
+    } else {
+        out["pass_it"] = pass_it;
+    }
+  
+  
+    do {
+      
+        var data = {"token":out["pass_it"]["text_pag"],"query":"","location":[],"department":[],"worktype":[],"remote":[]};
+        //var data = JSON.parse(dat);
+        $.ajax({
+            url: 'https://careers-page.workable.com/api/v3/accounts/betterhelp/jobs',  // 1) COLOCAR EL URL DEL JSON POST
+            headers: {
+                "accept": "application/json, text/plain, */*",
+                "content-Type": "application/json;charset=UTF-8"
+            },
+            type: 'POST',
+            data: JSON.stringify(data),
+            dataType: "json",
+            async: false,
+            success: function (result) {
+                msg("\x1b[43m loading jobs... ");
+               // validacion de cuantas paginas existen        									  
+                var texto_pag = result.nextPage;          	 
+                out["pass_it"]["text_pag"] = texto_pag;  	   
+                var total = result.total;							    
+                limit = total / 10;									 
+                limit = Math.ceil(limit);							
+              
+ 				json = result.results;    
+                for (var i = 0; i < json.length; i++) {
+                    var job = {};
+                  	var short_url = 'https://apply.workable.com/betterhelp/j/';
+                    job.title = json[i].title.replace(/ *\([^)]*\) */g, "");
+                    job.location = json[i].location.city + ', ' + json[i].location.region + ', ' + json[i].location.countryCode;
+                    job.url = short_url + json[i].shortcode;  
+                  	var fecha = json[i].published;
+                    fecha = fecha.split("T")[0].split("-");
+                    job.dateposted_raw = fecha[1] + '/' + fecha[2] + '/' + fecha[0];
+                    job.temp = 2;
+                    jobs.push(job);
+                }
+                cont++;
+            },
+            error: function (error) {
+                msg(error);
+            }
+        });
+    } while (cont < limit);                                 // condicion de parada
+
+    out["jobs"] = jobs;
+    out["pass_it"]["jobs"] = jobs.length;
+    return out;
+})();

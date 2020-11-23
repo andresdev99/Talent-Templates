@@ -1,0 +1,28 @@
+(function() {
+  var out = {};
+  var actual=document.querySelector('ul.page-numbers li span[aria-current="page"]').textContent.trim();
+  var ultimo=document.querySelector('ul.page-numbers li:last-child ').textContent.trim();
+  var clickable_elem = document.querySelector('ul.page-numbers li span[aria-current="page"]');
+
+  //stop condition
+  if (actual==ultimo) {
+    //last page
+    out["has_next_page"] = false;
+  } else if(clickable_elem.parentNode.nextElementSibling.querySelector("a")){
+    //go to next page
+    clickable_elem.parentNode.nextElementSibling.querySelector("a").click();
+    if(!clickable_elem.parentNode.nextElementSibling.querySelector("a"))
+    {
+      out["has_next_page"] = false;
+    }
+    else{
+      out["has_next_page"] = true;
+    }
+  } else {
+    //try again
+    out["has_next_page"] = true;
+  }
+
+  out.waitFor = "";
+  return out;
+})();

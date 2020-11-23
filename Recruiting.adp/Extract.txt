@@ -1,0 +1,92 @@
+(function () {
+	var jobs = [];
+	var out = {};
+	var counter = 1;
+	var limit = 0;
+	var json;
+	do {
+		var data = {"filters":
+                    [{"name":"state","label":"State"},
+                     {"name":"city","label":"City"},
+                     {"name":"grp",
+                      "label":"Area of Interest"},
+                     {"name":"typeOfFulltime","label":"Status"}],
+                    "results":
+                    {"pageTitle":"Search Results",
+                     "zeroResultsMessage":"We're sorry but we have no job openings at this time that match your search criteria. Please try another search.",
+                     "searchFailureMessage":"Oops! Something went wrong.  Search has encountered a problem. Try searching again",
+                     "resultsFoundLabel":"results found",
+                     "bookmarkText":"Bookmark This",
+                     "pageSize":"100",
+                     "sortOrder":"00001000",
+                     "shareText":"Share",
+                     "fields":[{"name":"ptitle",
+                                "label":"Published Job Title"},
+                               {"name":"companyCode","label":"Company"},
+                               {"name":"typeOfFulltime","label":"Status"},
+                               {"name":"typeOfSalaried","label":"Position Type"}]},
+                    "pagefilter":{"page":counter},"rl":"enUS"};/*{
+			"filters": [
+				{ "name": "state", "label": "State / Province" },
+				{ "name": "city", "label": "City" },
+				{ "name": "companyCode", "label": "Business Unit" },
+				{ "name": "departmentCode", "label": "Division" },
+				{ "name": "zzreqVirtualRemote", "label": "Home Office Jobs" },
+				{ "name": "payType", "label": "Salary or Hourly" }],
+			"results":
+			{
+				"pageTitle": "Search Results",
+				"zeroResultsMessage": "We're sorry but we have no job openings at this time that match your search criteria. Please try another search.",
+				"searchFailureMessage": "Oops! Something went wrong.  Search has encountered a problem. Try searching again",
+				"resultsFoundLabel": "results found.  To filter your results, click on \"filter\" on the sidebar.",
+				"bookmarkText": "Bookmark This",
+				"pageSize": "250",
+				"sortOrder": "00002000",
+				"shareText": "Share",
+				"fields": [
+					{ "name": "ptitle", "label": "Published Job Title" },
+					{ "name": "num", "label": "Req Num" },
+					{ "name": "departmentCode", "label": "Department" }]
+			},
+			"pagefilter": { "page": counter },
+			"rl": "enUS"
+		};*/
+
+		$.ajax({
+			url: 'https://recruiting.adp.com/srccar/public/rest/1/1335651/search/',
+			headers: {
+				"Content-Type": "application/json;charset=UTF-8"
+			},
+			type: 'POST',
+			data: JSON.stringify(data),
+			dataType: "json",
+			async: false,
+			success: function (result) {
+				json = result.jobs;
+              msg(json)
+				limit = result.pages + 1;
+				for (var i = 0; i < json.length; i++) {
+					var job = {};
+					job.title = json[i].ptitle;//.replace("Full-time", "").split(" - ").shift().trim();
+					job.url = json[i].url;
+					job.location = json[i].city + ", " + json[i].state;
+					//job.logo = elem.querySelector("").getAttribute("src").trim();
+					//job.source_apply_email = elem.querySelector("").textContent.trim();
+					//job.source_empname = elem.querySelector("").textContent.trim();
+					job.source_jobtype = json[i].typeOfFulltime;           
+					//job.source_salary = elem.querySelector("").textContent.trim();
+					job.temp = 1;
+					jobs.push(job);
+				}
+				counter = counter + 1;
+			},
+			error: function (error) {
+				msg(error);
+			}
+		});
+		//msg("Cantidad de jobs => " + jobs.length);
+	} while (counter < limit);
+
+	out["jobs"] = jobs;
+	return out;
+})();

@@ -1,0 +1,28 @@
+(function() {
+  var out = {};
+  if (typeof pass_it == "undefined") pass_it = {};
+  if (typeof msg == "undefined") msg = function (x) { return x; };
+
+  msg("-----------PAGINATION--------------");
+  msg(pass_it);
+  msg("-----------/PAGINATION----------------");
+
+  if (!pass_it["urls"]) {
+    out["pass_it"] = {
+      "jobs": 0,
+      "urls": ["https://rffe.qualcomm.com/company/jobs-career/jobs/Manufacturing",
+               "https://rffe.qualcomm.com/company/jobs-career/jobs/Organization,%20IT,%20Logistics",
+               "https://rffe.qualcomm.com/company/jobs-career/jobs/Other%20Functional%20Sectors",
+               "https://rffe.qualcomm.com/company/jobs-career/jobs/Student%20Trainees,%20Interns,%20Diploma%20Students"],
+      "currentUrl": 0
+    };
+  } else {
+    out["pass_it"] = pass_it;
+  }
+
+  var url = out["pass_it"].urls[out["pass_it"]["currentUrl"]];
+  window.location.href = url;
+  msg(url);
+
+  return out;
+})();

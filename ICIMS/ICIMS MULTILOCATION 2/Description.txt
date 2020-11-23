@@ -1,0 +1,85 @@
+(function() {
+  var out = {};
+  var job = {};
+  var selector = "div.iCIMS_JobContent";
+  var remove_selector = "div.iCIMS_JobOptions";
+  //var job = pass_it["job"];
+
+  var iframe_selector = "#icims_iframe_span > iframe";  
+  if(document.querySelector(iframe_selector)){
+    var iframeDocument = document.querySelector(iframe_selector).contentWindow.document;
+    //ELIMINAR SELECTOR CON .COM ETC..
+    
+	iframeDocument.querySelectorAll("a").forEach(elem=>{
+      if(elem.textContent.match(/\.com|\.php|\.html|\.co|\.es|\.edu/gi))
+      {
+        elem.remove();
+      }
+    })
+	/*VALIDAR VARIABLES*/
+    var validar = iframeDocument.querySelectorAll('dl');
+    validar.forEach(elem=>{
+      if(elem.textContent.indexOf('ID')>-1)
+      {
+        job.reqid = elem.querySelector("dd").textContent.trim();
+        msg(`\x1b[45m=>${job.reqid}`)
+      }
+    })
+    var full_html = iframeDocument.querySelector(selector);
+    // remove something from the jobdatata 
+    if (remove_selector != "") full_html.querySelector(remove_selector).remove();
+    if (full_html.querySelector("div.container-fluid.iCIMS_JobsTable")) 
+      full_html.querySelector("div.container-fluid.iCIMS_JobsTable").remove();
+    if (typeof cleanHTML == "undefined") cleanHTML = function(x){return x};
+    if (typeof msg == "undefined") msg = console.log;
+
+    
+    for (const a of full_html.querySelectorAll("a")) {        
+      if (a.textContent.includes("www")){//tambien se puede usar search o match
+        a.remove();
+      }
+    }
+
+    job.html 		= full_html.innerHTML.trim();
+    job.jobdesc 	= full_html.textContent.trim();
+
+    job.html = removeTextBefore(job.html, "Job Summary", false);
+    job.html = removeTextAfter(job.html, "Application FAQs", true);
+    job.html = removeTextAfter(job.html, "GNC has been a leading source of health and wellness products for more than 70", true);
+    job.html = removeTextAfter(job.html, "Equal Opportunity /", true);
+
+    //To view all benefits offered by Room & Board, please visit:
+    job.html 		= cleanHTML(job.html);
+    job.jobdesc 	= cleanHTML(job.jobdesc);
+    if(job.jobdesc.length<250)
+    {
+      job.flag_active = 0; 
+      job.html="";
+      job.jobdesc=""; 
+    }
+  }
+  out["job"] = job;
+  return out;
+
+  function removeTextBefore(html, text, flag) {
+    var newHtml = html;
+    if (newHtml.indexOf(text) > -1) {
+      newHtml = newHtml.split(text).pop();
+      if (!flag) {
+        newHtml = "<h3>" + text + "</h3>" + newHtml;
+      }  		
+    }
+    return newHtml;
+  }
+
+  function removeTextAfter(html, text, flag) {
+    var newHtml = html;
+    if (newHtml.indexOf(text) > -1) {
+      newHtml = newHtml.split(text).shift();
+      if (!flag) {
+        newHtml = newHtml + "<p>" + text + "</p>";
+      }  		
+    }
+    return newHtml;
+  }
+})();

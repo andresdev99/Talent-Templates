@@ -1,0 +1,67 @@
+(function() {
+  var out = {};
+  var html_jobs = document.querySelectorAll("div.resumator-job.resumator-jobs-text");
+  var jobs = [];for(var x in html_jobs){
+    if(typeof html_jobs[x] =="function") continue;
+    if(typeof html_jobs[x] =="number") continue;
+    var job = {};
+    var elem = html_jobs[x];
+    job.title = elem.querySelector("div.resumator-job-title.resumator-jobs-text").textContent.trim();
+    job.title = job.title.replace(/part time|full time|part-time|full-time|H\/F/gi,'').trim();
+    job.title = job.title.replace(/\([^)]*\)/g, "").replace(/[.*+?^${}()|[\]\\]/g, "").trim();
+
+    job.url = elem.querySelector("a.resumator-job-link.resumator-jobs-text").href.trim();
+    job.location = elem.querySelector("div.resumator-job-info.resumator-jobs-text").textContent.trim().split('Location:').pop().split('Department:').shift().trim();
+    job.source_jobtype = elem.querySelector("div.resumator-job-info-details.resumator-jobs-text").textContent.trim();
+    job.source_jobtype = job.source_jobtype.split("pe:").pop().trim();
+    job.source_jobtype = job.source_jobtype.split("Min.").shift().trim();
+   // job.source_empname = job.source_jobtype;
+    
+    
+    
+    
+    var selector = "div.resumator-job-description-text.resumator-jobs-text";
+    var full_html = elem.querySelector(selector);
+    job.html 		= full_html.innerHTML.trim();
+    job.html      = full_html.innerHTML.trim();   
+    
+    job.html = removeTextBefore(job.html, 'POSITION SUMMARY', false);
+    job.html = removeTextAfter(job.html, 'apply through', true);
+    
+    job.html      = cleanHTML(job.html);
+    var tmp       = document.createElement('div');
+    tmp.innerHTML = job.html;
+    job.jobdesc   = tmp.textContent.trim();
+    job.jobdesc   = cleanHTML(job.jobdesc);
+    out["job"] = job;
+
+
+    job.temp = 1;
+    jobs.push(job);
+  } 
+
+  out["jobs"]= jobs;
+  return out;
+})(); 
+
+function removeTextBefore(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).pop();
+    if (!flag) {
+      newHtml = "<h3>" + text + "</h3>" + newHtml;
+    }  		
+  }
+  return newHtml;
+}
+
+function removeTextAfter(html, text, flag) {
+  var newHtml = html;
+  if (newHtml.indexOf(text) > -1) {
+    newHtml = newHtml.split(text).shift();
+    if (!flag) {
+      newHtml = newHtml + "<p>" + text + "</p>";
+    }  		
+  }
+  return newHtml;
+}

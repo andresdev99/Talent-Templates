@@ -1,0 +1,16 @@
+1-Usuario ftp
+2-Contraseña usuario ftp
+3-Método de conexion, siempre es Curl
+4-Si el xml esta comprimido GZ y ZIP
+5-Formato siempre es XML
+6-Indica si se obtienen jobs por cantidad o por porcentajes
+7-Se indica el valor de acuerdo a lo que coloco en 6 siempre es un entero. 
+8-TAG de los jobs que contiene c/u de los trabajos
+9-TAG que contiene TODOS los jobs en el XML. 
+10-Se selecciona Date para obtener un XML con fecha embebida o Page si es por paginacion de numero
+
+ 
+
+11-El formato de la fecha, debe estar igual que en el archivo xml: ej si el archivo se llama trabajos-01-07-2020.xml el formato deberia ser d-m-Y (Y es formato de año largo y "y" es formato de año corto
+12-se coloca lo que esta antes de la fecha o numero.
+13-Se coloca lo que esta despues de la fecha numero, se debe incluir la extension del archivo:

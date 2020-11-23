@@ -1,0 +1,88 @@
+(function() {
+  var out = {};
+  var lastPosition =document.querySelectorAll("div#jPaginationHldr")[0].lastElementChild.childElementCount-2;
+  var lastnum =parseInt(document.querySelectorAll("div#jPaginationHldr")[0].lastElementChild.childNodes[lastPosition].textContent.trim());
+  var current = parseInt(document.querySelectorAll("div#jPaginationHldr")[0].lastElementChild.querySelector("span.current").textContent.trim())
+
+  //stop condition
+  if (current==lastnum) {
+    //last page
+    out["has_next_page"] = false;
+  } 
+  else {
+    //try again
+    document.querySelectorAll("div#jPaginationHldr")[0].lastElementChild.childNodes[lastPosition+1].click()
+    out["has_next_page"] = true;
+  }
+
+  out.waitFor = "div.job_list_row div.jlr_right_hldr";
+  return out;
+})();
+/*(function () {
+  var out = {};
+  out.wait=2000;
+  var token =window.location.href.split("search/").pop().split("/").shift().trim()
+   msg("\x1b[45m"+window.location.href);
+  msg("\x1b[45m"+token);
+  var url_base = "https://trinetjobs.referrals.selectminds.com/trinetcareers/jobs/search/3"+token+"/page";
+
+  if (typeof pass_it == "undefined") pass_it = {};
+  if (typeof msg == "undefined") msg = function(x){return x; };
+
+  if (!pass_it["cont"]) {
+    out["pass_it"] = {
+      "cont": 1,
+      "jobs": 0
+    };
+  } else {
+    out["pass_it"] = pass_it;
+  }
+
+  var num = "div.number_of_results"; 
+
+
+  var textPaginador = document.querySelector(num).textContent.trim();
+
+  var max = textPaginador.split('results')[0].trim(); //maxima cantidad de jobs
+
+  var perpage = document.querySelectorAll("div.job_list_row").length;
+
+  var perpagefijo=10;
+
+  min= out["pass_it"].jobs+perpage;
+
+  msg("msg: "+min);
+  msg("msg: "+max);
+
+  if(min >= max){
+    msg('\x1b[41m Fin de la paginacion por url\x1b[0m');
+    out["has_next_page"] = false;
+  }else{
+    var nuevaUrl = url_base+ out["pass_it"].cont;
+    out["pass_it"].cont++;
+    out["pass_it"].jobs=min;
+    window.location.href = nuevaUrl;
+    out["has_next_page"] = true; 
+  }
+
+
+
+  out["wait"] = true;
+  return out;
+})();*/
+/*
+(function() {
+  var out = {};
+  var next_page_selector = 'div[class="results_content jResultsContent jResultsActive"] a[class="next"]';
+  var clickable_elem = document.querySelector(next_page_selector);
+
+  if(clickable_elem){
+    clickable_elem.click();
+    out["has_next_page"] = true;
+  } else {
+    out["has_next_page"] = false;
+  }
+
+  out.waitFor = 'div#job_results_list_hldr div.jlr_right_hldr';
+  return out;
+})();*/

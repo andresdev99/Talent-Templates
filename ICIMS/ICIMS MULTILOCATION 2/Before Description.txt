@@ -1,0 +1,5 @@
+(function() {
+	var out = {};
+  	out.waitFor = "#icims_content_iframe"
+    return out;
+})();

@@ -1,0 +1,52 @@
+
+(function() {
+  var jobs = [];
+  var out = {};
+  var counter = 1;
+  var limit = 0;
+  var json;
+  do {
+    var data = {"filters":[{"name":"country","label":"Country"},{"name":"state","label":"State"}],"results":{"pageTitle":"Search Results","zeroResultsMessage":"We're sorry but we have no job openings at this time that match your search criteria. Please try another search.","searchFailureMessage":"Oops! Something went wrong.  Search has encountered a problem. Try searching again","resultsFoundLabel":"results found","bookmarkText":"Bookmark This","pageSize":"100","sortOrder":"00001000","shareText":"Share","fields":[{"name":"ptitle","label":"Published Job Title"},{"name":"typeOfFulltime","label":"Status"},{"name":"grp","label":"Functional Group"}]},"pagefilter":{"page":counter},"rl":"enUS"};
+    $.ajax({
+      url: 'https://recruiting.adp.com/srccar/public/rest/1/130807/search/',
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8"
+      },
+      type: 'POST',
+      data: JSON.stringify(data),
+      dataType: "json",
+      async: false,
+      success: function(result) {
+        json = result.jobs;
+        limit = result.pages + 1;
+        for (var i = 0; i < json.length; i++) {
+          var job = {};
+          job.title = json[i].ptitle;
+          job.url = json[i].url;
+          if (json[i].locationaddress) {
+            var iso= json[i].locationaddress[0].split(",").length;
+            var iso=json[i].locationaddress[0].split(",")[iso-1].trim()
+            job.location = json[i].city+", "+iso;
+          }  else {
+            job.location = "Weston, Florida";
+          }
+
+          //job.logo = elem.querySelector("").getAttribute("src").trim();
+          //job.source_apply_email = elem.querySelector("").textContent.trim();
+          //job.source_empname = elem.querySelector("").textContent.trim();
+          //job.source_jobtype = elem.querySelector("").textContent.trim();
+          //job.source_salary = elem.querySelector("").textContent.trim();
+          //job.temp = 1;
+          jobs.push(job);
+        }
+        counter = counter + 1;
+      },
+      error: function(error) {
+        msg(error);
+      }
+    });
+  } while (counter < limit);
+
+  out["jobs"] = jobs;
+  return out;
+})();
